@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Trang Chủ</Text>
+      <Text style={styles.title}>Trang Chủ của Bookington</Text>
       <Text>Đây là nội dung chính của ứng dụng sau khi onboarding xong.</Text>
     </View>
   );

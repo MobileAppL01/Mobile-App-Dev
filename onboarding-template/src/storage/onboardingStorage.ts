@@ -20,3 +20,12 @@ export const getHasSeenOnboarding = async (): Promise<boolean> => {
   }
 };
 
+// --- THÊM HÀM NÀY ---
+export const clearOnboarding = async () => {
+  try {
+    await AsyncStorage.removeItem(ONBOARDING_KEY);
+    console.log('Đã xóa trạng thái Onboarding!');
+  } catch (e) {
+    console.error('Error clearing onboarding status', e);
+  }
+};
