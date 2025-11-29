@@ -32,7 +32,7 @@ export default function RootNavigator() {
     (async () => {
       // --- DEBUGGING ONLY ---
       // Uncomment the line below if you want to force reset the onboarding to test again
-      await clearOnboarding(); 
+      // await clearOnboarding(); 
       // ----------------------
 
       const seen = await getHasSeenOnboarding();
