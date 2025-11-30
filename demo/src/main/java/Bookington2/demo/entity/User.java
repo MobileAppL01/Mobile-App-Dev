@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "t_user")
 @Getter
 @Setter
 @Builder            // <--- QUAN TRỌNG: Để dùng được User.builder()
@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor // <--- QUAN TRỌNG: Để @Builder hoạt động
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue
     private String id;
 
     // Các trường khác...
@@ -22,4 +22,7 @@ public class User {
     private String lastName;
     private String email;
     private String phone;
+    @ManyToOne
+    @JoinColumn(name="user_role")
+    private Role role;
 }
