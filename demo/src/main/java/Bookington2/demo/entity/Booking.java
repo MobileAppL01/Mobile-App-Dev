@@ -24,10 +24,10 @@ public class Booking {
     private float totalPrice;
     private String status;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="player_id", referencedColumnName = "id")
     private User player;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="court_id", referencedColumnName = "id")
     private Court court;
 

@@ -1,26 +1,16 @@
-package Bookington2.demo.entity;
+package Bookington2.demo.dto;
 
-
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Location {
-    @Id
-    @GeneratedValue
+@Data
+public class LocationDTO {
     private Integer id;
-    @ManyToOne
-    @JoinColumn(name="onwer_id")
-    private User user;
     private String name;
     private String address;
     private float rating;
     private int pricePerHour;
-    private int startHour;
-    private int endHour;
 }

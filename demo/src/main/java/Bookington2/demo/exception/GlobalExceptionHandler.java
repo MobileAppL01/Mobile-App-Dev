@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
         APIResponse apiResponse = new APIResponse();
 
         apiResponse.setCode(ErrorCode.UNCATERGORIZED_EXCEPTION.getCode());
-        apiResponse.setMessage(ErrorCode.UNCATERGORIZED_EXCEPTION.getMessage());
+        apiResponse.setMessage(exception.getMessage());
 
         return ResponseEntity.badRequest().body(apiResponse);
     }
