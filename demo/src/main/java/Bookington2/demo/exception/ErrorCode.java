@@ -37,6 +37,13 @@ public enum ErrorCode {
     PROMOTION_NOT_FOUND(5001, "Promotion not found"),
     PROMOTION_CODE_EXISTS(5002, "Promotion code already exists"),
     INVALID_DATE_RANGE(5003, "Start date must be before end date"),
+
+    // Payment errors
+    PAYMENT_NOT_FOUND(6001, "Payment not found"),
+    PAYMENT_ALREADY_COMPLETED(6002, "This booking has already been paid"),
+    INVALID_PAYMENT_SIGNATURE(6003, "Invalid payment signature"),
+    PAYMENT_FAILED(6004, "Payment failed"),
+    PAYMENT_EXPIRED(6005, "Payment session expired"),
     ;
 
     ErrorCode(int code, String message) {

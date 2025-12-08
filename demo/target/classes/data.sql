@@ -4,12 +4,9 @@ CREATE EXTENSION IF NOT EXISTS unaccent;
 -- ==========================================
 -- Insert Roles
 -- ==========================================
-INSERT INTO role (id, name, description)
-VALUES
-    (1, 'ADMIN', 'Administrator'),
-    (2, 'OWNER', 'Court Owner'),
-    (3, 'PLAYER', 'Badminton Player');
-
+INSERT INTO role (id, name, description) 
+VALUES (1, 'ADMIN', 'Administrator'), (2, 'OWNER', 'Court Owner'), (3, 'PLAYER', 'Badminton Player')
+ON CONFLICT (id) DO NOTHING;
 -- ==========================================
 -- Insert Users
 -- ==========================================

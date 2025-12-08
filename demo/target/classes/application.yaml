@@ -33,3 +33,10 @@ springdoc:
 
 server:
   port: 8080
+
+# VNPAY Configuration (Sandbox)
+# vnpay:
+#   tmn-code: "CGXZLS0Z"
+#   hash-secret: "XNBCJFAKAZQSGTARRLGCHVZWCIOIGSHN"
+#   url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+#   return-url: "http://localhost:8080/api/v1/payment/vnpay/return"

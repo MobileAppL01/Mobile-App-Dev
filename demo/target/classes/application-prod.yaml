@@ -30,3 +30,9 @@ springdoc:
 server:
   port: ${PORT:8080}
 
+# VNPAY Configuration (Production - use environment variables)
+# vnpay:
+#   tmn-code: ${VNPAY_TMN_CODE:CGXZLS0Z}
+#   hash-secret: ${VNPAY_HASH_SECRET:XNBCJFAKAZQSGTARRLGCHVZWCIOIGSHN}
+#   url: ${VNPAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+#   return-url: ${VNPAY_RETURN_URL:http://localhost:8080/api/v1/payment/vnpay/return}
