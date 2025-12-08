@@ -13,17 +13,26 @@ import java.util.List;
 public class LocationService {
     @Autowired
     private LocationRepository locationRepository;
-    public List<LocationDTO> getAllLocations(){
+
+    public List<LocationDTO> getAllLocations() {
         return locationRepository.findAll().stream().map(this::toLocationDto).toList();
     }
-    private LocationDTO toLocationDto(Location location){
-        return new LocationDTO(location.getId(),location.getName(),location.getAddress(),location.getRating(),location.getPricePerHour());
+
+    private LocationDTO toLocationDto(Location location) {
+        return new LocationDTO(
+                location.getId(),
+                location.getName(),
+                location.getAddress(),
+                location.getRating() != null ? location.getRating() : 0.0f,
+                location.getPricePerHour() != null ? location.getPricePerHour() : 0
+        );
     }
-    public List<LocationDTO> getLocationsByAddress(String address){
+
+    public List<LocationDTO> getLocationsByAddress(String address) {
         return locationRepository.searchByAddress(address).stream().map(this::toLocationDto).toList();
     }
 
-    public OpenTimeDTO getOpenTimeByLocationId(Integer id){
+    public OpenTimeDTO getOpenTimeByLocationId(Integer id) {
         return locationRepository.findLocationById(id);
     }
 }

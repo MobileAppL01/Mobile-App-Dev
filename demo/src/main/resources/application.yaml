@@ -2,7 +2,7 @@ spring:
   application:
     name: demo
   datasource:
-    url: jdbc:postgresql://localhost:5433/mobile
+    url: jdbc:postgresql://localhost:5432/mobile
     username: postgres
     password: yasuo20gg
     driver-class-name: org.postgresql.Driver
@@ -21,3 +21,15 @@ spring:
       data-locations: classpath:data.sql
       encoding: UTF-8
 
+# Swagger/OpenAPI configuration
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    operationsSorter: method
+
+server:
+  port: 8080

@@ -1,11 +1,11 @@
 package Bookington2.demo.dto;
 
+import Bookington2.demo.enums.BookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +15,6 @@ public class BookingDTO {
     private String locationName;
     private Integer startTime;
     private Integer endTime;
-    private String status;
+    private BookingStatus status;
     private LocalDate bookingDate;
 }
