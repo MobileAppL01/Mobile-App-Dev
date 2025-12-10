@@ -8,15 +8,17 @@ import {
   SafeAreaView,
   StatusBar,
   Dimensions,
+  Button,
 } from "react-native";
-import { StackScreenProps } from '@react-navigation/stack';
-import { RootStackParamList } from '../navigation/RootNavigator';
+import * as Sentry from "@sentry/react-native"; // <--- DÒNG QUAN TRỌNG
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../navigation/RootNavigator";
 
-type Props = StackScreenProps<RootStackParamList, 'OnboardingFirst'>;
+type Props = StackScreenProps<RootStackParamList, "OnboardingFirst">;
 
 const { width, height } = Dimensions.get("window");
 
-const OnboardingScreenFirst = ({navigation} : Props) => {
+const OnboardingScreenFirst = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -64,6 +66,13 @@ const OnboardingScreenFirst = ({navigation} : Props) => {
         >
           <Text style={styles.buttonText}>Tiếp tục</Text>
         </TouchableOpacity>
+
+        <Button
+          title="Test Sentry"
+          onPress={() =>
+            Sentry.captureException(new Error("Demo error for assignment at 10h13"))
+          }
+        />
       </View>
     </SafeAreaView>
   );

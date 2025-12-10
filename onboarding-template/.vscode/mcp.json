@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "Sentry": {
+      "url": "https://mcp.sentry.dev/mcp/hcmut-nu/react-native-mobile-app",
+      "type": "http"
+    }
+  }
+}
