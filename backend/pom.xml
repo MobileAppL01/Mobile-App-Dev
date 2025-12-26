@@ -8,10 +8,10 @@
 		<version>3.3.5</version> <relativePath/>
 	</parent>
 	<groupId>Bookington2</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>Bookington Backend</name>
+	<description>Bookington Backend Service</description>
 
 	<properties>
 		<java.version>21</java.version>

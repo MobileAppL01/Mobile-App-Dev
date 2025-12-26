@@ -190,11 +190,11 @@ import { useAuthStore } from "../../store/useAuthStore";
 
 const { width, height } = Dimensions.get("window");
 
-// ✅ FIX 1: Define the Props type
+// Define the Props type
 type Props = StackScreenProps<RootStackParamList, "OnboardingThird">;
 
 const OnboardingScreenThird = ({ navigation }: Props) => {
-  // ✅ FIX 2: Hooks must be called INSIDE the component
+  // Hooks must be called INSIDE the component
   const setHasSeenOnboarding = useAuthStore(
     (state) => state.setHasSeenOnboarding
   );
