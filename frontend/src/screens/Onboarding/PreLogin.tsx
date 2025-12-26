@@ -1,59 +1,46 @@
 import React from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  Image, 
-  TouchableOpacity, 
-  StatusBar, 
-  Dimensions 
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  StatusBar,
+  Dimensions
 } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; // Thư viện icon của Expo
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootNavigator';
 const { width, height } = Dimensions.get("window");
 
-// ❗ KHAI BÁO TYPE CHUẨN CHO PROPS
 type Props = StackScreenProps<RootStackParamList, "PreLogin">;
-const PreLogin = ({ navigation}: Props) => {
+const PreLogin = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       
-      {/* 1. Phần Logo (Top) */}
       <View style={styles.topSection}>
-        {/* Thay logo Bookinton vào đây */}
         <Image
-          source={require('../../assets/Bookington_logo.png')} // Đường dẫn ảnh logo của bạn
+          source={require('../../assets/Bookington_logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
       </View>
 
-      {/* 2. Phần Nút Bấm (Middle) */}
       <View style={styles.middleSection}>
-        
-        {/* Nút Đăng ký bằng Email */}
         <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('SignUp', {method:'email'})}>
           <MaterialCommunityIcons name="email-outline" size={24} color="white" style={styles.icon} />
           <Text style={styles.buttonText}>Đăng ký bằng Email</Text>
         </TouchableOpacity>
 
-        {/* Nút Đăng ký bằng điện thoại */}
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('SignUp', {method:'phone'})}>
           <MaterialCommunityIcons name="phone" size={24} color="white" style={styles.icon} />
           <Text style={styles.buttonText}>Đăng ký bằng điện thoại</Text>
         </TouchableOpacity>
 
-        {/* Divider "Hoặc" */}
-        <View style={styles.dividerContainer}>
-          <View style={styles.line} />
-          <Text style={styles.orText}>hoặc</Text>
-          <View style={styles.line} />
         </View>
-
-        {/* Text Đã có tài khoản */}
         <View style={styles.loginContainer}>
           <Text style={styles.textNormal}>Đã có tài khoản?  </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -61,16 +48,14 @@ const PreLogin = ({ navigation}: Props) => {
           </TouchableOpacity>
         </View>
 
-      </View>
+      </View >
 
-      {/* 3. Phần Ảnh Chân trang (Bottom) */}
-      {/* Thay hình ảnh người chơi cầu lông vào đây */}
-      <Image
-        source={{ uri: 'https://i.imgur.com/your-footer-image.png' }} // Placeholder hoặc require local asset
-        style={styles.footerImage}
-        resizeMode="contain"
-      />
-    </SafeAreaView>
+  <Image
+    source={{ uri: 'https://i.imgur.com/your-footer-image.png' }}
+    style={styles.footerImage}
+    resizeMode="contain"
+  />
+    </SafeAreaView >
   );
 };
 
@@ -80,8 +65,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#3B9AFF', // Màu xanh chủ đạo
     alignItems: 'center',
   },
-  
-  // --- Style Phần Top ---
+
+
   topSection: {
     flex: 0.4, // Chiếm 40% màn hình phía trên
     justifyContent: 'center',
@@ -122,7 +107,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  
+
   // Divider "hoặc"
   dividerContainer: {
     flexDirection: 'row',
