@@ -15,14 +15,8 @@ import { RootStackParamList } from '../../navigation/RootNavigator';
 const { width, height } = Dimensions.get("window");
 
 // ❗ KHAI BÁO TYPE CHUẨN CHO PROPS
-type PreLoginProps = StackScreenProps<
-  RootStackParamList,
-  'PreLogin'
-> & {
-  onFinish: () => Promise<void>;
-};
-
-const PreLogin = ({ navigation, onFinish }: PreLoginProps) => {
+type Props = StackScreenProps<RootStackParamList, "PreLogin">;
+const PreLogin = ({ navigation}: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,34 +10,53 @@ import {
   Platform,
   ScrollView,
   Dimensions,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { StackScreenProps } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/RootNavigator';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/RootNavigator";
+// 1. Import Store
+import { useAuthStore } from "../../store/useAuthStore";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 // Định nghĩa Type cho Props
-type LoginProps = StackScreenProps<RootStackParamList, 'Login'>;
+type LoginProps = StackScreenProps<RootStackParamList, "Login">;
 
 const LoginScreen = ({ navigation }: LoginProps) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  // const { isAuthenticated, hasSeenOnboarding } = useAuthStore();
+  const login = useAuthStore((state) => state.login);
 
   const handleLogin = () => {
     // Xử lý logic đăng nhập tại đây (API call, validation...)
-    console.log('Login with:', email, password);
-    
-    // Ví dụ: Nếu thành công thì chuyển vào trang chủ
-    // navigation.navigate('Home'); 
-    // Hoặc cập nhật State global để RootNavigator tự chuyển đổi
+    console.log("Login with:", email, password);
+    // const isAuthenticated = true;
+    // // Ví dụ: Nếu thành công thì chuyển vào trang chủ
+    // navigation.navigate('Home');
+    // // Hoặc cập nhật State global để RootNavigator tự chuyển đổi
+    const mockUserData = {
+      id: "123",
+      name: "lyquang",
+      email: "lythanh@gmail.com",
+      role: "CLIENT",
+      avatar: "https://i.pravatar.cc/300",
+    };
+    console.log("mockdata", mockUserData);
+
+    // 3. QUAN TRỌNG: Gọi hàm login của Store
+    // Hành động này sẽ set isAuthenticated = true
+    // RootNavigator sẽ tự động chuyển sang màn hình Home
+    login(mockUserData);
+    // Lưu ý: Không cần gọi navigation.navigate('Home') nếu RootNavigator
+    // đã được cấu hình điều kiện (Conditional Rendering) theo biến isAuthenticated.
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
         <ScrollView
@@ -46,20 +65,20 @@ const LoginScreen = ({ navigation }: LoginProps) => {
         >
           {/* --- 1. Header (Nút Back + Logo) --- */}
           <View style={styles.header}>
-            <TouchableOpacity 
-              style={styles.backButton} 
+            <TouchableOpacity
+              style={styles.backButton}
               onPress={() => navigation.goBack()}
             >
               <Ionicons name="chevron-back" size={28} color="#3B9AFF" />
             </TouchableOpacity>
 
             <Image
-              source={require('../../assets/Bookington_logo.png')}
+              source={require("../../assets/Bookington_logo.png")}
               style={styles.logo}
               resizeMode="contain"
             />
             {/* View rỗng để cân bằng layout header */}
-            <View style={{ width: 28 }} /> 
+            <View style={{ width: 28 }} />
           </View>
 
           {/* --- 2. Tiêu đề --- */}
@@ -71,7 +90,6 @@ const LoginScreen = ({ navigation }: LoginProps) => {
 
           {/* --- 3. Form Input --- */}
           <View style={styles.formContainer}>
-            
             {/* Email */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Tên đăng nhập</Text>
@@ -112,7 +130,7 @@ const LoginScreen = ({ navigation }: LoginProps) => {
             {/* --- 4. Footer (Đăng ký) --- */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Chưa có tài khoản? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('PreLogin')}>
+              <TouchableOpacity onPress={() => navigation.navigate("PreLogin")}>
                 <Text style={styles.linkText}>Đăng ký</Text>
               </TouchableOpacity>
             </View>
@@ -121,13 +139,12 @@ const LoginScreen = ({ navigation }: LoginProps) => {
           {/* --- 5. Hình ảnh trang trí dưới cùng --- */}
           {/* Căn lề trái giống thiết kế */}
           <View style={styles.bottomImageContainer}>
-             <Image
-              source={require('../../assets/Leechongwei.png')}
+            <Image
+              source={require("../../assets/Leechongwei.png")}
               style={styles.bottomImage}
               resizeMode="contain"
             />
           </View>
-
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -137,7 +154,7 @@ const LoginScreen = ({ navigation }: LoginProps) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   container: {
     flex: 1,
@@ -148,9 +165,9 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 10,
     marginBottom: 30,
   },
@@ -159,22 +176,22 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 140, // Điều chỉnh kích thước logo cho phù hợp
-    height: 50, 
+    height: 50,
   },
   titleContainer: {
     marginBottom: 30,
-    textAlign: 'center', // Căn giữa tiêu đề
-    alignSelf: 'center',
+    textAlign: "center", // Căn giữa tiêu đề
+    alignSelf: "center",
   },
   titleNormal: {
     fontSize: 20,
-    fontWeight: '600',
-    color: 'black',
+    fontWeight: "600",
+    color: "black",
   },
   titleHighlight: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#3B9AFF', // Màu xanh điểm nhấn
+    fontWeight: "bold",
+    color: "#3B9AFF", // Màu xanh điểm nhấn
   },
   formContainer: {
     marginBottom: 20,
@@ -184,28 +201,28 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: '#555',
+    color: "#555",
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#CCCCCC',
+    borderColor: "#CCCCCC",
     borderRadius: 8,
     paddingHorizontal: 15,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#333',
-    backgroundColor: '#fff',
+    color: "#333",
+    backgroundColor: "#fff",
   },
   forgotPasswordContainer: {
-    alignItems: 'flex-end', // Đẩy text sang phải
+    alignItems: "flex-end", // Đẩy text sang phải
     marginBottom: 25,
   },
   button: {
-    backgroundColor: '#3B9AFF',
+    backgroundColor: "#3B9AFF",
     borderRadius: 8,
     paddingVertical: 15,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -214,39 +231,39 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   footerText: {
     fontSize: 16,
-    color: '#555',
-    fontWeight: 'bold',
+    color: "#555",
+    fontWeight: "bold",
   },
   linkText: {
     fontSize: 16,
-    color: '#3B9AFF',
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
+    color: "#3B9AFF",
+    fontWeight: "bold",
+    textDecorationLine: "underline",
   },
-  
+
   // Style cho hình ảnh dưới cùng
   bottomImageContainer: {
-    marginTop: 'auto', // Đẩy xuống đáy màn hình
-    alignItems: 'flex-start', // Căn hình sang trái
-    width: '100%',
+    marginTop: "auto", // Đẩy xuống đáy màn hình
+    alignItems: "flex-start", // Căn hình sang trái
+    width: "100%",
     height: 150,
     opacity: 0.4, // Làm mờ nhẹ
   },
   bottomImage: {
-    width: '50%', // Chiếm khoảng nửa màn hình bề ngang
-    height: '100%',
-  }
+    width: "50%", // Chiếm khoảng nửa màn hình bề ngang
+    height: "100%",
+  },
 });
 
 export default LoginScreen;

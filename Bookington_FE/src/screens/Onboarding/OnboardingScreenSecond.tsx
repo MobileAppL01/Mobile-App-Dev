@@ -9,35 +9,36 @@ import {
   Dimensions,
 } from "react-native";
 import { StackScreenProps } from '@react-navigation/stack';
-import { RootStackParamList } from "../../navigation/RootNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+// Import your specific paths
+import { RootStackParamList } from "../../navigation/RootNavigator";
+import { useAuthStore } from '../../store/useAuthStore';
+
 const { width, height } = Dimensions.get("window");
 
-// ❗ KHAI BÁO TYPE CHUẨN CHO PROPS
-type OnboardingSecondProps = StackScreenProps<
-  RootStackParamList,
-  'OnboardingSecond'
-> & {
-  onFinish: () => Promise<void>;
-};
+// ✅ FIX 1: Define the Props type
+type Props = StackScreenProps<RootStackParamList, 'OnboardingSecond'>;
 
-const OnboardingScreenSecond = ({ navigation, onFinish }: OnboardingSecondProps) => {
+const OnboardingScreenSecond = ({ navigation }: Props) => {
+  // ✅ FIX 2: Hooks must be called INSIDE the component
+  const setHasSeenOnboarding = useAuthStore((state) => state.setHasSeenOnboarding);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       {/* 1. Phần Logo */}
       <View style={styles.headerContainer}>
-        {/* Bạn thay source={require('./path/to/logo.png')} vào đây */}
         <Image
-          source={require("../../assets/Bookington_logo.png")} // Logo demo giả định
+          source={require("../../assets/Bookington_logo.png")}
           style={styles.logo}
+          resizeMode="contain"
         />
       </View>
 
       {/* 2. Phần Hình Ảnh Chính */}
       <View style={styles.imageContainer}>
-        {/* Bạn thay hình vận động viên vào đây */}
         <Image
           source={require("../../assets/Leechongwei.png")}
           style={styles.mainImage}
@@ -62,11 +63,10 @@ const OnboardingScreenSecond = ({ navigation, onFinish }: OnboardingSecondProps)
         </View>
 
         {/* Button Tiếp Tục */}
-        {/* 2. Thêm sự kiện onPress vào nút bấm */}
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.8}
-          // Dòng quan trọng: Chuyển sang màn hình thứ 2
+          // Chuyển sang màn hình thứ 3
           onPress={() => navigation.navigate("OnboardingThird")}
         >
           <Text style={styles.buttonText}>Tiếp tục</Text>
@@ -79,27 +79,21 @@ const OnboardingScreenSecond = ({ navigation, onFinish }: OnboardingSecondProps)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3B9AFF", // Màu xanh chủ đạo giống hình
+    backgroundColor: "#3B9AFF", // Màu xanh chủ đạo
     alignItems: "center",
     justifyContent: "space-between",
   },
   headerContainer: {
     marginTop: 20,
     alignItems: "center",
-    height: height * 0.15, // Chiếm 15% màn hình
+    height: height * 0.15,
   },
   logo: {
-    width: width * 0.8,
-  },
-  logoText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 18,
-    marginTop: 5,
-    letterSpacing: 1,
+    width: width * 0.6, // Adjusted width slightly for better fit
+    height: '100%',
   },
   imageContainer: {
-    height: height * 0.45, // Chiếm 45% màn hình cho ảnh to
+    height: height * 0.45,
     justifyContent: "center",
     alignItems: "center",
     width: width,
@@ -109,7 +103,7 @@ const styles = StyleSheet.create({
     height: "90%",
   },
   bottomContainer: {
-    height: height * 0.4, // Chiếm 40% màn hình còn lại
+    height: height * 0.4,
     width: "100%",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -120,10 +114,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     marginBottom: 10,
+    textAlign: 'center',
   },
   description: {
     fontSize: 16,
-    color: "#E0F0FF", // Màu trắng hơi nhạt cho text phụ
+    color: "#E0F0FF",
     textAlign: "center",
     lineHeight: 24,
     marginBottom: 20,
@@ -138,7 +133,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "rgba(255, 255, 255, 0.5)", // Dot mờ
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
     marginHorizontal: 5,
   },
   activeDot: {
@@ -146,7 +141,7 @@ const styles = StyleSheet.create({
     height: 10,
     backgroundColor: "transparent",
     borderWidth: 2,
-    borderColor: "white", // Dot rỗng active
+    borderColor: "white",
     borderRadius: 6,
   },
   button: {
@@ -165,7 +160,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
-    color: "#3B9AFF", // Màu chữ cùng màu nền
+    color: "#3B9AFF",
     fontSize: 18,
     fontWeight: "600",
   },
