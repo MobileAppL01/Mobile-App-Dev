@@ -19,7 +19,7 @@ const PreLogin = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
-      
+
       <View style={styles.topSection}>
         <Image
           source={require('../../assets/Bookington_logo.png')}
@@ -29,18 +29,18 @@ const PreLogin = ({ navigation }: Props) => {
       </View>
 
       <View style={styles.middleSection}>
-        <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('SignUp', {method:'email'})}>
+        <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('SignUp', { method: 'email' })}>
           <MaterialCommunityIcons name="email-outline" size={24} color="white" style={styles.icon} />
           <Text style={styles.buttonText}>Đăng ký bằng Email</Text>
         </TouchableOpacity>
 
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('SignUp', {method:'phone'})}>
+
+        <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('SignUp', { method: 'phone' })}>
           <MaterialCommunityIcons name="phone" size={24} color="white" style={styles.icon} />
           <Text style={styles.buttonText}>Đăng ký bằng điện thoại</Text>
         </TouchableOpacity>
 
-        </View>
+
         <View style={styles.loginContainer}>
           <Text style={styles.textNormal}>Đã có tài khoản?  </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -50,11 +50,11 @@ const PreLogin = ({ navigation }: Props) => {
 
       </View >
 
-  <Image
-    source={{ uri: 'https://i.imgur.com/your-footer-image.png' }}
-    style={styles.footerImage}
-    resizeMode="contain"
-  />
+      <Image
+        source={{ uri: 'https://i.imgur.com/your-footer-image.png' }}
+        style={styles.footerImage}
+        resizeMode="contain"
+      />
     </SafeAreaView >
   );
 };
