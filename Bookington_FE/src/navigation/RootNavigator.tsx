@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
 // Import Storage
-import { getHasSeenOnboarding, setHasSeenOnboarding, clearOnboarding } from '../storage/onboardingStorage';
+import {
+  getHasSeenOnboarding,
+  setHasSeenOnboarding,
+  clearOnboarding,
+} from "../storage/onboardingStorage";
 
 // Import Screens
-import OnboardingScreenFirst from '../screens/Onboarding/OnboardingScreenFirst';
-import OnboardingScreenSecond from '../screens/Onboarding/OnboardingScreenSecond';
-import OnboardingScreenThird from '../screens/Onboarding/OnboardingScreenThird';
-import HomeScreen from '../screens/Onboarding/HomeScreen';
-
-import PreLogin from '../screens/Onboarding/PreLogin';
+import OnboardingScreenFirst from "../screens/Onboarding/OnboardingScreenFirst";
+import OnboardingScreenSecond from "../screens/Onboarding/OnboardingScreenSecond";
+import OnboardingScreenThird from "../screens/Onboarding/OnboardingScreenThird";
+import HomeScreen from "../screens/Onboarding/HomeScreen";
+import PreLogin from "../screens/Onboarding/PreLogin";
+import SignUpScreen from "../screens/Authentication/SignUpScreen";
+import LoginScreen from "../screens/Authentication/LoginScreen";
 
 // Define Types for all screens
 export type RootStackParamList = {
@@ -21,6 +26,8 @@ export type RootStackParamList = {
   OnboardingFourth: undefined;
   PreLogin: undefined;
   Home: undefined;
+  SignUp: { method: "email" | "phone" };
+  Login: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -31,21 +38,16 @@ export default function RootNavigator() {
 
   useEffect(() => {
     (async () => {
-      // --- DEBUGGING ONLY ---
-      // Uncomment the line below if you want to force reset the onboarding to test again
-      // await clearOnboarding(); 
-      // ----------------------
-
       const seen = await getHasSeenOnboarding();
-      console.log('User has seen onboarding:', seen);
-      
+      console.log("User has seen onboarding:", seen);
+
       setHasSeen(seen);
       setLoading(false);
     })();
   }, []);
 
   if (loading) {
-    return null; 
+    return null;
   }
 
   // Define the function to handle finishing the onboarding flow
@@ -57,37 +59,47 @@ export default function RootNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        
-        { !hasSeenOnboarding ? (
-          // === ONBOARDING FLOW ===
-          // We use React.Fragment (<>...</>) to group multiple screens
+        {!hasSeenOnboarding ? (
           <>
-            {/* SCREEN 1: User clicks "Next" -> Navigates to OnboardingSecond */}
-            <Stack.Screen name="OnboardingFirst" component={OnboardingScreenFirst} />
+            <Stack.Screen
+              name="OnboardingFirst"
+              component={OnboardingScreenFirst}
+            />
 
-            {/* SCREEN 2: User clicks "Get Started" -> Calls onFinish -> Goes to Home */}
             <Stack.Screen name="OnboardingSecond">
-              {props => <OnboardingScreenSecond {...props} onFinish={handleOnboardingFinish} />}
+              {(props) => (
+                <OnboardingScreenSecond
+                  {...props}
+                  onFinish={handleOnboardingFinish}
+                />
+              )}
             </Stack.Screen>
 
-               {/* SCREEN 3: User clicks "Get Started" -> Calls onFinish -> Goes to Home */}
             <Stack.Screen name="OnboardingThird">
-              {props => <OnboardingScreenThird {...props} onFinish={handleOnboardingFinish} />}
+              {(props) => (
+                <OnboardingScreenThird
+                  {...props}
+                  onFinish={handleOnboardingFinish}
+                />
+              )}
             </Stack.Screen>
-{/* 
-              <Stack.Screen name="OnboardingFourth">
-              {props => <OnboardingScreenFourth {...props} onFinish={handleOnboardingFinish} />}
-            </Stack.Screen> */}
 
-               <Stack.Screen name="PreLogin">
-              {props => <PreLogin {...props} onFinish={handleOnboardingFinish} />}
+            <Stack.Screen name="PreLogin">
+              {(props) => (
+                <PreLogin {...props} onFinish={handleOnboardingFinish} />
+              )}
             </Stack.Screen>
+
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+
+            <Stack.Screen name="Login" component={LoginScreen} />
           </>
         ) : (
           // === MAIN APP FLOW ===
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <>
+            <Stack.Screen name="Home" component={HomeScreen} />
+          </>
         )}
-
       </Stack.Navigator>
     </NavigationContainer>
   );

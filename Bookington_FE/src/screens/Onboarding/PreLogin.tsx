@@ -41,13 +41,13 @@ const PreLogin = ({ navigation, onFinish }: PreLoginProps) => {
       <View style={styles.middleSection}>
         
         {/* Nút Đăng ký bằng Email */}
-        <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('SignUp', {method:'email'})}>
           <MaterialCommunityIcons name="email-outline" size={24} color="white" style={styles.icon} />
           <Text style={styles.buttonText}>Đăng ký bằng Email</Text>
         </TouchableOpacity>
 
         {/* Nút Đăng ký bằng điện thoại */}
-        <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.navigate('SignUp', {method:'phone'})}>
           <MaterialCommunityIcons name="phone" size={24} color="white" style={styles.icon} />
           <Text style={styles.buttonText}>Đăng ký bằng điện thoại</Text>
         </TouchableOpacity>
@@ -62,7 +62,7 @@ const PreLogin = ({ navigation, onFinish }: PreLoginProps) => {
         {/* Text Đã có tài khoản */}
         <View style={styles.loginContainer}>
           <Text style={styles.textNormal}>Đã có tài khoản?  </Text>
-          <TouchableOpacity onPress={() => console.log("Navigate to Login")}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={styles.textBold}>Đăng nhập</Text>
           </TouchableOpacity>
         </View>
