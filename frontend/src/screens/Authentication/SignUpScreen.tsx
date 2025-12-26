@@ -28,14 +28,14 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  
+
   // State for toggling password visibility
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // --- Logic Helpers ---
   const isEmail = method === "email";
-  
+
   // Validation & Submit Handler
   const handleRegister = () => {
     // 1. Check Empty
@@ -51,7 +51,7 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
     }
 
     // 3. Success logic (API Call here)
-    console.log("Registering with:", { method, inputValue, fullName, password });
+    console.log("Registering with:", { inputValue, fullName, password });
     Alert.alert("Thành công", "Mã OTP đã được gửi!");
   };
 
@@ -85,19 +85,17 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
           <Text style={styles.title}>Đăng Ký</Text>
 
           <View style={styles.formContainer}>
-            
-            {/* Dynamic Input (Email or Phone) */}
+
+            {/* Email Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>
-                {isEmail ? "Địa chỉ email" : "Số điện thoại"}
-              </Text>
+              <Text style={styles.label}>Địa chỉ email</Text>
               <TextInput
                 style={styles.input}
-                placeholder={isEmail ? "example@gmail.com" : "09xx"}
+                placeholder="example@gmail.com"
                 placeholderTextColor="#A0A0A0"
                 value={inputValue}
                 onChangeText={setInputValue}
-                keyboardType={isEmail ? "email-address" : "phone-pad"} // Updated phone-pad
+                keyboardType="email-address"
                 autoCapitalize="none"
               />
             </View>
@@ -127,14 +125,14 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword} // Toggle logic
                 />
-                <TouchableOpacity 
-                  style={styles.eyeIcon} 
+                <TouchableOpacity
+                  style={styles.eyeIcon}
                   onPress={() => setShowPassword(!showPassword)}
                 >
-                  <Ionicons 
-                    name={showPassword ? "eye" : "eye-off"} 
-                    size={24} 
-                    color="#A0A0A0" 
+                  <Ionicons
+                    name={showPassword ? "eye" : "eye-off"}
+                    size={24}
+                    color="#A0A0A0"
                   />
                 </TouchableOpacity>
               </View>
@@ -152,14 +150,14 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
                   onChangeText={setConfirmPassword}
                   secureTextEntry={!showConfirmPassword}
                 />
-                <TouchableOpacity 
-                  style={styles.eyeIcon} 
+                <TouchableOpacity
+                  style={styles.eyeIcon}
                   onPress={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  <Ionicons 
-                    name={showConfirmPassword ? "eye" : "eye-off"} 
-                    size={24} 
-                    color="#A0A0A0" 
+                  <Ionicons
+                    name={showConfirmPassword ? "eye" : "eye-off"}
+                    size={24}
+                    color="#A0A0A0"
                   />
                 </TouchableOpacity>
               </View>

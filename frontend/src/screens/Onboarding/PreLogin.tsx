@@ -42,21 +42,8 @@ const PreLogin = ({ navigation }: Props) => {
           />
           <Text style={styles.buttonText}>Đăng ký bằng Email</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          activeOpacity={0.7}
-          onPress={() => navigation.navigate("SignUp", { method: "phone" })}
-        >
-          <MaterialCommunityIcons
-            name="phone"
-            size={24}
-            color="white"
-            style={styles.icon}
-          />
-          <Text style={styles.buttonText}>Đăng ký bằng điện thoại</Text>
-        </TouchableOpacity>
       </View>
+
       <View style={styles.loginContainer}>
         <Text style={styles.textNormal}>Đã có tài khoản? </Text>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
@@ -64,31 +51,12 @@ const PreLogin = ({ navigation }: Props) => {
         </TouchableOpacity>
       </View>
 
-<<<<<<< HEAD
-
-  <View style={styles.loginContainer}>
-    <Text style={styles.textNormal}>Đã có tài khoản?  </Text>
-    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-      <Text style={styles.textBold}>Đăng nhập</Text>
-    </TouchableOpacity>
-  </View>
-
-      </View >
-
-  <Image
-    source={{ uri: 'https://i.imgur.com/your-footer-image.png' }}
-    style={styles.footerImage}
-    resizeMode="contain"
-  />
-    </SafeAreaView >
-=======
       <Image
         source={{ uri: "https://i.imgur.com/your-footer-image.png" }}
         style={styles.footerImage}
         resizeMode="contain"
       />
     </SafeAreaView>
->>>>>>> 5ad54b6081d2c4e7f1a65ee6fed7c5db0a142575
   );
 };
 
