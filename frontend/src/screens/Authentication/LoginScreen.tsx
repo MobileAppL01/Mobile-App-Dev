@@ -17,6 +17,8 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 // 1. Import Store
 import { useAuthStore } from "../../store/useAuthStore";
+// 2. Import Theme
+import { COLORS, SIZES, COMMON_STYLES, AUTH_STYLES } from "../../constants/theme";
 
 const { width } = Dimensions.get("window");
 
@@ -54,49 +56,43 @@ const LoginScreen = ({ navigation }: LoginProps) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={COMMON_STYLES.safeArea}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
+        style={COMMON_STYLES.container}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={COMMON_STYLES.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* --- 1. Header (Nút Back + Logo) --- */}
           <View style={styles.header}>
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => navigation.goBack()}
             >
-              <Ionicons name="chevron-back" size={28} color="#3B9AFF" />
+              <Ionicons name="chevron-back" size={28} color={COLORS.primary} />
             </TouchableOpacity>
 
             <Image
-              source={require("../../assets/Bookington_logo.png")}
+              source={require("../../assets/logos/bookinton_logo_dark.png")}
               style={styles.logo}
               resizeMode="contain"
             />
-            {/* View rỗng để cân bằng layout header */}
             <View style={{ width: 28 }} />
           </View>
 
-          {/* --- 2. Tiêu đề --- */}
-          {/* Dùng Text lồng nhau để tô màu xanh cho chữ Đăng nhập */}
           <Text style={styles.titleContainer}>
             <Text style={styles.titleNormal}>Chào mừng trở lại, </Text>
             <Text style={styles.titleHighlight}>Đăng nhập</Text>
           </Text>
 
-          {/* --- 3. Form Input --- */}
           <View style={styles.formContainer}>
-            {/* Email */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Tên đăng nhập</Text>
+              <Text style={COMMON_STYLES.label}>Tên đăng nhập</Text>
               <TextInput
-                style={styles.input}
+                style={COMMON_STYLES.input}
                 placeholder="09xxx/example@gmail.com"
-                placeholderTextColor="#A0A0A0"
+                placeholderTextColor={COLORS.placeholder}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -104,45 +100,39 @@ const LoginScreen = ({ navigation }: LoginProps) => {
               />
             </View>
 
-            {/* Mật khẩu */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Mật khẩu</Text>
+              <Text style={COMMON_STYLES.label}>Mật khẩu</Text>
               <TextInput
-                style={styles.input}
+                style={COMMON_STYLES.input}
                 placeholder="abc123"
-                placeholderTextColor="#A0A0A0"
+                placeholderTextColor={COLORS.placeholder}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
               />
             </View>
 
-            {/* Quên mật khẩu (Căn phải) */}
             <TouchableOpacity style={styles.forgotPasswordContainer}>
-              <Text style={styles.linkText}>Quên mật khẩu</Text>
+              <Text style={COMMON_STYLES.linkText}>Quên mật khẩu</Text>
             </TouchableOpacity>
 
             {/* Button Đăng nhập */}
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Đăng nhập</Text>
+            <TouchableOpacity style={COMMON_STYLES.button} onPress={handleLogin}>
+              <Text style={COMMON_STYLES.buttonText}>Đăng nhập</Text>
             </TouchableOpacity>
 
-            {/* --- 4. Footer (Đăng ký) --- */}
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>Chưa có tài khoản? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate("PreLogin")}>
-                <Text style={styles.linkText}>Đăng ký</Text>
+            <View style={COMMON_STYLES.footer}>
+              <Text style={COMMON_STYLES.footerText}>Chưa có tài khoản? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("SignUp", { method: "email" })}>
+                <Text style={COMMON_STYLES.linkText}>Đăng ký</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* --- 5. Hình ảnh trang trí dưới cùng --- */}
-          {/* Căn lề trái giống thiết kế */}
-          <View style={styles.bottomImageContainer}>
+          <View style={AUTH_STYLES.footerImageContainer}>
             <Image
-              source={require("../../assets/Leechongwei.png")}
-              style={styles.bottomImage}
-              resizeMode="contain"
+              source={require("../../assets/images/bottom_image_2.png")}
+              style={AUTH_STYLES.footerImage}
             />
           </View>
         </ScrollView>
@@ -152,31 +142,17 @@ const LoginScreen = ({ navigation }: LoginProps) => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  container: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
+  // Override or add specific styles here if not in COMMON_STYLES
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 10,
-    marginBottom: 30,
+    ...COMMON_STYLES.header,
+    marginBottom: 30, // Custom margin for Login
   },
   backButton: {
     padding: 5,
   },
   logo: {
-    width: 140, // Điều chỉnh kích thước logo cho phù hợp
-    height: 50,
+    width: 300, // Specific width for Login
+    height: 120,
   },
   titleContainer: {
     marginBottom: 30,
@@ -184,14 +160,14 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   titleNormal: {
-    fontSize: 20,
+    fontSize: SIZES.h2,
     fontWeight: "600",
-    color: "black",
+    color: COLORS.black,
   },
   titleHighlight: {
-    fontSize: 20,
+    fontSize: SIZES.h2,
     fontWeight: "bold",
-    color: "#3B9AFF", // Màu xanh điểm nhấn
+    color: COLORS.primary, // Màu xanh điểm nhấn
   },
   formContainer: {
     marginBottom: 20,
@@ -199,71 +175,12 @@ const styles = StyleSheet.create({
   inputGroup: {
     marginBottom: 20,
   },
-  label: {
-    fontSize: 16,
-    color: "#555",
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#CCCCCC",
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: "#333",
-    backgroundColor: "#fff",
-  },
   forgotPasswordContainer: {
     alignItems: "flex-end", // Đẩy text sang phải
     marginBottom: 25,
   },
-  button: {
-    backgroundColor: "#3B9AFF",
-    borderRadius: 8,
-    paddingVertical: 15,
-    alignItems: "center",
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footerText: {
-    fontSize: 16,
-    color: "#555",
-    fontWeight: "bold",
-  },
-  linkText: {
-    fontSize: 16,
-    color: "#3B9AFF",
-    fontWeight: "bold",
-    textDecorationLine: "underline",
-  },
 
-  // Style cho hình ảnh dưới cùng
-  bottomImageContainer: {
-    marginTop: "auto", // Đẩy xuống đáy màn hình
-    alignItems: "flex-start", // Căn hình sang trái
-    width: "100%",
-    height: 150,
-    opacity: 0.4, // Làm mờ nhẹ
-  },
-  bottomImage: {
-    width: "50%", // Chiếm khoảng nửa màn hình bề ngang
-    height: "100%",
-  },
 });
 
 export default LoginScreen;
+

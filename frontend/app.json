@@ -4,11 +4,11 @@
     "slug": "bookingtonmobiledev",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/app_icon.png",
+    "icon": "./src/assets/icons/app_icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./src/assets/splash-icon.png",
+      "image": "./src/assets/icons/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,14 +18,14 @@
     "android": {
       "package": "com.khoale2k4.templateonboarding",
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./src/assets/favicon.png"
+      "favicon": "./src/assets/icons/favicon.png"
     },
     "extra": {
       "eas": {

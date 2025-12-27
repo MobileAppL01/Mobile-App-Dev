@@ -10,12 +10,13 @@ import {
   Platform,
   ScrollView,
   Dimensions,
-  Alert, // Import Alert for validation
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
+import { COLORS, SIZES, COMMON_STYLES, AUTH_STYLES } from "../../constants/theme";
 
 // Define Props
 type SignUpProps = StackScreenProps<RootStackParamList, "SignUp">;
@@ -56,26 +57,25 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={COMMON_STYLES.safeArea}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
+        style={COMMON_STYLES.container}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={COMMON_STYLES.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* --- Header --- */}
-          <View style={styles.header}>
+          <View style={COMMON_STYLES.header}>
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => navigation.goBack()}
             >
-              <Ionicons name="chevron-back" size={28} color="#3B9AFF" />
+              <Ionicons name="chevron-back" size={28} color={COLORS.primary} />
             </TouchableOpacity>
 
             <Image
-              source={require("../../assets/Bookington_logo.png")}
+              source={require("../../assets/logos/bookinton_logo_dark.png")}
               style={styles.logo}
               resizeMode="contain"
             />
@@ -86,13 +86,12 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
 
           <View style={styles.formContainer}>
 
-            {/* Email Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Địa chỉ email</Text>
+              <Text style={COMMON_STYLES.label}>Địa chỉ email</Text>
               <TextInput
-                style={styles.input}
+                style={COMMON_STYLES.input}
                 placeholder="example@gmail.com"
-                placeholderTextColor="#A0A0A0"
+                placeholderTextColor={COLORS.placeholder}
                 value={inputValue}
                 onChangeText={setInputValue}
                 keyboardType="email-address"
@@ -100,27 +99,25 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
               />
             </View>
 
-            {/* Full Name */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Họ và tên</Text>
+              <Text style={COMMON_STYLES.label}>Họ và tên</Text>
               <TextInput
-                style={styles.input}
+                style={COMMON_STYLES.input}
                 placeholder="Nguyễn Văn A"
-                placeholderTextColor="#A0A0A0"
+                placeholderTextColor={COLORS.placeholder}
                 value={fullName}
                 onChangeText={setFullName}
                 autoCapitalize="words"
               />
             </View>
 
-            {/* Password */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Mật khẩu</Text>
+              <Text style={COMMON_STYLES.label}>Mật khẩu</Text>
               <View style={styles.passwordContainer}>
                 <TextInput
-                  style={[styles.input, styles.passwordInput]} // Combine styles
+                  style={[COMMON_STYLES.input, styles.passwordInput]} // Combine styles
                   placeholder="abc123"
-                  placeholderTextColor="#A0A0A0"
+                  placeholderTextColor={COLORS.placeholder}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword} // Toggle logic
@@ -132,20 +129,19 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
                   <Ionicons
                     name={showPassword ? "eye" : "eye-off"}
                     size={24}
-                    color="#A0A0A0"
+                    color={COLORS.placeholder}
                   />
                 </TouchableOpacity>
               </View>
             </View>
 
-            {/* Confirm Password */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Nhập lại mật khẩu</Text>
+              <Text style={COMMON_STYLES.label}>Nhập lại mật khẩu</Text>
               <View style={styles.passwordContainer}>
                 <TextInput
-                  style={[styles.input, styles.passwordInput]}
+                  style={[COMMON_STYLES.input, styles.passwordInput]}
                   placeholder="abc123"
-                  placeholderTextColor="#A0A0A0"
+                  placeholderTextColor={COLORS.placeholder}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                   secureTextEntry={!showConfirmPassword}
@@ -157,32 +153,28 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
                   <Ionicons
                     name={showConfirmPassword ? "eye" : "eye-off"}
                     size={24}
-                    color="#A0A0A0"
+                    color={COLORS.placeholder}
                   />
                 </TouchableOpacity>
               </View>
             </View>
 
-            {/* Button */}
             <TouchableOpacity style={styles.button} onPress={handleRegister}>
-              <Text style={styles.buttonText}>Gửi mã OTP</Text>
+              <Text style={COMMON_STYLES.buttonText}>Gửi mã OTP</Text>
             </TouchableOpacity>
 
-            {/* Login Link - FIXED */}
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>Đã có tài khoản? </Text>
+            <View style={COMMON_STYLES.footer}>
+              <Text style={COMMON_STYLES.footerText}>Đã có tài khoản? </Text>
               <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                <Text style={styles.linkText}>Đăng nhập</Text>
+                <Text style={COMMON_STYLES.linkText}>Đăng nhập</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* Footer Image */}
-          <View style={styles.bottomImageContainer}>
+          <View style={AUTH_STYLES.footerImageContainer}>
             <Image
-              source={require("../../assets/Leechongwei.png")}
-              style={styles.bottomImage}
-              resizeMode="contain"
+              source={require("../../assets/images/bottom_image_2.png")}
+              style={AUTH_STYLES.footerImage}
             />
           </View>
         </ScrollView>
@@ -192,36 +184,17 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  container: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 10,
-    marginBottom: 20,
-  },
   backButton: {
     padding: 5,
   },
   logo: {
-    width: 150,
-    height: 60,
+    width: 300,
+    height: 120,
   },
   title: {
-    fontSize: 24,
+    fontSize: SIZES.h1,
     fontWeight: "bold",
-    color: "black",
+    color: COLORS.black,
     textAlign: "center",
     marginBottom: 30,
   },
@@ -231,78 +204,38 @@ const styles = StyleSheet.create({
   inputGroup: {
     marginBottom: 20,
   },
-  label: {
-    fontSize: 16,
-    color: "#555",
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#CCCCCC",
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: "#333",
-    backgroundColor: "#fff",
-  },
   // New Styles for Password Eye Icon
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    // We want the container to not have a border, but simply wrap the input + icon
+    // Actually, traditionally, the border is ON the container for "Input with Icon" pattern.
+    // But `COMMON_STYLES.input` already has border. 
+    // Let's adjust: The container should simulate the input style, and the inner input should have no border.
+    // OR: we just overlay the icon.
+    // Overlay is easier if we don't want to restructure common styles much.
+    // Let's try overlay or flex row.
+    // Current code: Container has border.
     borderWidth: 1,
-    borderColor: "#CCCCCC",
-    borderRadius: 8,
-    backgroundColor: "#fff",
+    borderColor: COLORS.grayBorder,
+    borderRadius: SIZES.borderRadius,
+    backgroundColor: COLORS.white,
   },
   passwordInput: {
     flex: 1,
     borderWidth: 0, // Remove border because container has it
+    height: 50, // Match typical input height roughly or let padding handle it
+    paddingVertical: 12, // Match common style
   },
   eyeIcon: {
     padding: 10,
   },
-  // End New Styles
   button: {
-    backgroundColor: "#3B9AFF",
-    borderRadius: 8,
-    paddingVertical: 15,
-    alignItems: "center",
+    ...COMMON_STYLES.button,
     marginTop: 10,
     marginBottom: 20,
   },
-  buttonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footerText: {
-    fontSize: 16,
-    color: "#555",
-    fontWeight: "bold",
-  },
-  linkText: {
-    fontSize: 16,
-    color: "#3B9AFF",
-    fontWeight: "bold",
-    textDecorationLine: "underline",
-  },
-  bottomImageContainer: {
-    marginTop: "auto",
-    alignItems: "flex-start",
-    width: "100%",
-    height: 150,
-    opacity: 0.5,
-  },
-  bottomImage: {
-    width: "60%",
-    height: "100%",
-  },
+
 });
 
 export default SignUpScreen;

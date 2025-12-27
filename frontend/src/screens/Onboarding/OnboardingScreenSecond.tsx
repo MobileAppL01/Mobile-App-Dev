@@ -31,7 +31,7 @@ const OnboardingScreenSecond = ({ navigation }: Props) => {
       {/* 1. Phần Logo */}
       <View style={styles.headerContainer}>
         <Image
-          source={require("../../assets/Bookington_logo.png")}
+          source={require("../../assets/logos/bookinton_logo_light.png")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -40,7 +40,7 @@ const OnboardingScreenSecond = ({ navigation }: Props) => {
       {/* 2. Phần Hình Ảnh Chính */}
       <View style={styles.imageContainer}>
         <Image
-          source={require("../../assets/Leechongwei.png")}
+          source={require("../../assets/images/Leechongwei.png")}
           style={styles.mainImage}
           resizeMode="contain"
         />

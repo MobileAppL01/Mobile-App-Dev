@@ -12,9 +12,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
+import { COLORS, SIZES, AUTH_STYLES } from "../../constants/theme";
+
 const { width, height } = Dimensions.get("window");
 
 type Props = StackScreenProps<RootStackParamList, "PreLogin">;
+
 const PreLogin = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
@@ -22,8 +25,8 @@ const PreLogin = ({ navigation }: Props) => {
 
       <View style={styles.topSection}>
         <Image
-          source={require("../../assets/Bookington_logo.png")}
-          style={styles.logo}
+          source={require("../../assets/logos/bookinton_logo_light.png")}
+          style={AUTH_STYLES.logo}
           resizeMode="contain"
         />
       </View>
@@ -37,25 +40,32 @@ const PreLogin = ({ navigation }: Props) => {
           <MaterialCommunityIcons
             name="email-outline"
             size={24}
-            color="white"
+            color={COLORS.white}
             style={styles.icon}
           />
           <Text style={styles.buttonText}>Đăng ký bằng Email</Text>
         </TouchableOpacity>
+
+        <View style={styles.dividerContainer}>
+          <View style={styles.line} />
+          <Text style={styles.orText}>hoặc</Text>
+          <View style={styles.line} />
+        </View>
+
+        <View style={styles.loginContainer}>
+          <Text style={styles.textNormal}>Đã có tài khoản? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <Text style={styles.textBold}>Đăng nhập</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <View style={styles.loginContainer}>
-        <Text style={styles.textNormal}>Đã có tài khoản? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={styles.textBold}>Đăng nhập</Text>
-        </TouchableOpacity>
+      <View style={AUTH_STYLES.footerImageContainer}>
+        <Image
+          source={require("../../assets/images/bottom_image_1.png")}
+          style={AUTH_STYLES.footerImage}
+        />
       </View>
-
-      <Image
-        source={{ uri: "https://i.imgur.com/your-footer-image.png" }}
-        style={styles.footerImage}
-        resizeMode="contain"
-      />
     </SafeAreaView>
   );
 };
@@ -63,92 +73,76 @@ const PreLogin = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3B9AFF", // Màu xanh chủ đạo
+    backgroundColor: COLORS.primary, // Blue background
     alignItems: "center",
   },
-
   topSection: {
-    flex: 0.4, // Chiếm 40% màn hình phía trên
+    flex: 0.4,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
     paddingTop: 50,
   },
-  logo: {
-    width: width * 1, // Logo rộng 60% màn hình
-  },
 
-  // --- Style Phần Giữa (Nút bấm) ---
   middleSection: {
-    flex: 0.4,
+    flex: 0.3,
     width: "100%",
     alignItems: "center",
     paddingHorizontal: 30,
     justifyContent: "flex-start",
   },
   button: {
-    flexDirection: "row", // Xếp icon và chữ ngang hàng
+    flexDirection: "row",
     width: "100%",
     height: 50,
     borderWidth: 1.5,
-    borderColor: "white",
-    borderRadius: 8,
+    borderColor: COLORS.white,
+    borderRadius: SIZES.borderRadius,
     alignItems: "center",
-    justifyContent: "center", // Canh giữa nội dung trong nút
+    justifyContent: "center",
     marginBottom: 15,
     backgroundColor: "transparent",
   },
   icon: {
-    position: "absolute", // Để icon nằm cố định bên trái
+    position: "absolute",
     left: 20,
   },
   buttonText: {
-    color: "white",
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: SIZES.body,
     fontWeight: "600",
   },
 
-  // Divider "hoặc"
   dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    marginVertical: 25,
+    marginVertical: 15, // Reduced margin
   },
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.6)", // Line mờ
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
   },
   orText: {
-    color: "white",
+    color: COLORS.white,
     marginHorizontal: 10,
     fontSize: 14,
   },
 
-  // Login Text
   loginContainer: {
     flexDirection: "row",
-    marginTop: 10,
+    marginTop: 5,
   },
   textNormal: {
-    color: "white",
+    color: COLORS.white,
     fontSize: 15,
   },
   textBold: {
-    color: "white",
+    color: COLORS.white,
     fontSize: 15,
     fontWeight: "bold",
-    textDecorationLine: "underline", // Gạch chân chữ Đăng nhập
-  },
-
-  // --- Style Phần Chân trang ---
-  footerImage: {
-    position: "absolute", // Đặt tuyệt đối ở đáy
-    bottom: 0,
-    width: width,
-    height: height * 0.2, // Cao khoảng 20% màn hình
-    opacity: 0.8,
+    textDecorationLine: "underline",
   },
 });
 

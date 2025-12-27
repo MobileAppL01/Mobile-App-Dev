@@ -4,14 +4,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import ClientTabs from "./ClientTabs";
 
-// 1. Import Store
 import { useAuthStore } from "../store/useAuthStore";
 
 // Import Screens
+import SplashScreen from "../screens/SplashScreen"; // Import SplashScreen
 import OnboardingScreenFirst from "../screens/Onboarding/OnboardingScreenFirst";
 import OnboardingScreenSecond from "../screens/Onboarding/OnboardingScreenSecond";
 import OnboardingScreenThird from "../screens/Onboarding/OnboardingScreenThird";
-import HomeScreen from "../screens/BookingCourt/HomeScreen";
+// import HomeScreen from "../screens/BookingCourt/HomeScreen"; // Unused
 import PreLogin from "../screens/Onboarding/PreLogin";
 import SignUpScreen from "../screens/Authentication/SignUpScreen";
 import LoginScreen from "../screens/Authentication/LoginScreen";
@@ -19,6 +19,7 @@ import ManagerHomeScreen from "../screens/ManagingCourt/ManagerHomeScreen";
 import RevenueScreen from "../screens/ManagingCourt/RevenueScreen";
 
 export type RootStackParamList = {
+  Splash: undefined;
   OnboardingFirst: undefined;
   OnboardingSecond: undefined;
   OnboardingThird: undefined;
@@ -34,36 +35,27 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
-  // 2. Lấy state từ Zustand (không cần useEffect hay useState nữa)
-  // isAuthenticated: Đã đăng nhập hay chưa?
-  // hasSeenOnboarding: Đã xem intro chưa?
   const { isAuthenticated, hasSeenOnboarding, user } = useAuthStore();
-  console.log("user", user);
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* LOGIC ĐIỀU HƯỚNG CHÍNH */}
         {isAuthenticated ? (
-          // === NHÓM 1: ĐÃ ĐĂNG NHẬP ===
-
-          // Kiểm tra ROLE ở đây
+          // === LOGGED IN ===
           user?.role === "MANAGER" ? (
-            // --- A. Nếu là MANAGER ---
             <>
               <Stack.Screen name="ManagerHome" component={ManagerHomeScreen} />
               <Stack.Screen name="ManagerRevenue" component={RevenueScreen} />
             </>
           ) : (
-            // --- B. Nếu là CLIENT (Khách) ---
             <>
-              {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
               <Stack.Screen name="ClientTabs" component={ClientTabs} />
-              {/* Thêm các màn hình khác của khách vào đây (Booking, Profile...) */}
             </>
           )
         ) : (
-          // === NHÓM 2: CHƯA ĐĂNG NHẬP (Auth Flow) ===
+          // === NOT LOGGED IN ===
           <>
+            {/* Show Onboarding first if not seen */}
             {!hasSeenOnboarding && (
               <>
                 <Stack.Screen
@@ -80,6 +72,9 @@ export default function RootNavigator() {
                 />
               </>
             )}
+
+            {/* Then Splash */}
+            <Stack.Screen name="Splash" component={SplashScreen} />
 
             <Stack.Screen name="PreLogin" component={PreLogin} />
             <Stack.Screen name="Login" component={LoginScreen} />
