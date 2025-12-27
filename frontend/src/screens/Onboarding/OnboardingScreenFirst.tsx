@@ -7,9 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Dimensions,
-  Button,
 } from "react-native";
-import * as Sentry from "@sentry/react-native"; // <--- DÒNG QUAN TRỌNG
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,24 +21,22 @@ const OnboardingScreenFirst = ({ navigation }: Props) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
 
-      {/* 1. Phần Logo */}
       <View style={styles.headerContainer}>
         <Image
-          source={require("../../assets/Bookington_logo.png")} // Logo demo giả định
+          source={require("../../assets/logos/bookinton_logo_light.png")}
           style={styles.logo}
+          resizeMode="contain"
         />
       </View>
 
-      {/* 2. Phần Hình Ảnh Chính */}
       <View style={styles.imageContainer}>
         <Image
-          source={require("../../assets/Leechongwei.png")}
+          source={require("../../assets/images/Leechongwei.png")}
           style={styles.mainImage}
           resizeMode="contain"
         />
       </View>
 
-      {/* 3. Phần Nội Dung & Nút Bấm */}
       <View style={styles.bottomContainer}>
         <Text style={styles.title}>Đặt Sân Ngay</Text>
 
@@ -56,23 +52,13 @@ const OnboardingScreenFirst = ({ navigation }: Props) => {
           <View style={styles.dot} />
         </View>
 
-        {/* Button Tiếp Tục */}
-        {/* 2. Thêm sự kiện onPress vào nút bấm */}
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.8}
-          // Dòng quan trọng: Chuyển sang màn hình thứ 2
           onPress={() => navigation.navigate("OnboardingSecond")}
         >
           <Text style={styles.buttonText}>Tiếp tục</Text>
         </TouchableOpacity>
-
-        <Button
-          title="Test Sentry"
-          onPress={() =>
-            Sentry.captureException(new Error("Demo error for assignment at 10h13"))
-          }
-        />
       </View>
     </SafeAreaView>
   );
