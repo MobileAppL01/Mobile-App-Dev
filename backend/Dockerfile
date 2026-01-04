@@ -22,7 +22,7 @@ FROM eclipse-temurin:21-jdk-jammy
 
 WORKDIR /app
 
-COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar demo.jar
+COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar demo.jar
 
 # Expose port
 EXPOSE 8080
