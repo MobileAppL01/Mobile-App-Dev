@@ -20,7 +20,7 @@ const { width } = Dimensions.get('window');
 
 
 export default function CourtDetailScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const route = useRoute();
     const { court } = (route.params as any) || {};
 
@@ -134,7 +134,9 @@ export default function CourtDetailScreen() {
                             <Ionicons name="star" size={12} color="#FFD700" />
                             <Text style={styles.ratingText}>{courtData.rating}</Text>
                         </View>
-                        <Text style={styles.reviewText}>| {courtData.reviewCount} đánh giá</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Review')}>
+                            <Text style={styles.reviewText}>| {courtData.reviewCount} đánh giá</Text>
+                        </TouchableOpacity>
                     </View>
 
                     <View style={styles.linkRow}>
