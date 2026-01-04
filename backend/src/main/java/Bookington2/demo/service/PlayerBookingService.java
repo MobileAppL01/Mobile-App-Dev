@@ -84,7 +84,7 @@ public class PlayerBookingService {
      * Create a new booking
      */
     @Transactional
-    public BookingDetailResponse createBooking(CreateBookingRequest request, String playerId) {
+    public BookingDetailResponse createBooking(CreateBookingRequest request, Integer playerId) {
         // 1. Validate court exists and is active
         Court court = courtRepository.findByIdAndDeletedFalse(request.getCourtId())
                 .orElseThrow(() -> new AppException(ErrorCode.COURT_NOT_FOUND));
@@ -161,7 +161,7 @@ public class PlayerBookingService {
     /**
      * Get player's booking history
      */
-    public List<MyBookingResponse> getMyBookings(String playerId, BookingStatus status,
+    public List<MyBookingResponse> getMyBookings(Integer playerId, BookingStatus status,
                                                    LocalDate fromDate, LocalDate toDate) {
         List<Booking> bookings = bookingRepository.findAllByPlayerIdWithFilters(
                 playerId, status, fromDate, toDate);
@@ -174,7 +174,7 @@ public class PlayerBookingService {
     /**
      * Get booking detail
      */
-    public BookingDetailResponse getBookingDetail(Integer bookingId, String playerId) {
+    public BookingDetailResponse getBookingDetail(Integer bookingId, Integer playerId) {
         Booking booking = bookingRepository.findByIdAndPlayer_Id(bookingId, playerId)
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
 
@@ -185,7 +185,7 @@ public class PlayerBookingService {
      * Cancel booking
      */
     @Transactional
-    public CancelBookingResponse cancelBooking(Integer bookingId, String playerId) {
+    public CancelBookingResponse cancelBooking(Integer bookingId, Integer playerId) {
         Booking booking = bookingRepository.findByIdAndPlayer_Id(bookingId, playerId)
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
 

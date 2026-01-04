@@ -16,9 +16,9 @@ public interface CourtRepository extends JpaRepository<Court, Integer> {
 
     Optional<Court> findByIdAndDeletedFalse(Integer id);
 
-    Optional<Court> findByIdAndLocation_Owner_IdAndDeletedFalse(Integer courtId, String ownerId);
+    Optional<Court> findByIdAndLocation_Owner_IdAndDeletedFalse(Integer courtId, Integer ownerId);
 
-    List<Court> findAllByLocation_Owner_IdAndDeletedFalse(String ownerId);
+    List<Court> findAllByLocation_Owner_IdAndDeletedFalse(Integer ownerId);
 
     int countByLocation_IdAndDeletedFalse(Integer locationId);
 }

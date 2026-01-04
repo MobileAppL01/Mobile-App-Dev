@@ -23,9 +23,9 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
     OpenTimeDTO findLocationById(Integer id);
 
     // Owner APIs
-    List<Location> findAllByOwner_Id(String ownerId);
+    List<Location> findAllByOwner_Id(Integer ownerId);
 
-    Optional<Location> findByIdAndOwner_Id(Integer id, String ownerId);
+    Optional<Location> findByIdAndOwner_Id(Integer id, Integer ownerId);
 
-    boolean existsByIdAndOwner_Id(Integer id, String ownerId);
+    boolean existsByIdAndOwner_Id(Integer id, Integer ownerId);
 }

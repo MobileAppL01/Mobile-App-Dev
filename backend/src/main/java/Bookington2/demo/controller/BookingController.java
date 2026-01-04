@@ -6,6 +6,7 @@ import Bookington2.demo.dto.TimeSlotView;
 import Bookington2.demo.entity.Booking;
 import Bookington2.demo.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,12 +21,13 @@ public class BookingController {
     @Autowired
     BookingService bookingService;
     @GetMapping(path = "/bookingHistory")
-    public List<BookingDTO> getBookingHistory(@RequestParam String user) {
+    @PreAuthorize("hasRole('PLAYER')")
+    public List<BookingDTO> getBookingHistory(@RequestParam Integer user) {
             return bookingService.getBookingHistory(user);
     }
 
 
-
+    @PreAuthorize("hasAnyRole('PLAYER','ONWER')")
     @GetMapping(path = "/available")
     public List<Integer> getAvailableTimeSlotOfCourtAtDate(@RequestParam LocalDate date, @RequestParam Integer court) {
         return bookingService.getAvailableTimeSlotsOfCourtAtDate(court,date);

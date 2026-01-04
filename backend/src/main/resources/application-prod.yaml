@@ -2,20 +2,25 @@ spring:
   application:
     name: demo
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: false
+      ddl-auto: create-drop
+    show-sql: true
     properties:
       hibernate:
         format_sql: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
     database: POSTGRESQL
-    defer-datasource-initialization: false
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+      encoding: UTF-8
 
 # Swagger/OpenAPI configuration
 springdoc:
@@ -27,8 +32,7 @@ springdoc:
     path: /swagger-ui.html
     operationsSorter: method
 
-server:
-  port: ${PORT:8080}
+
 
 # VNPAY Configuration (Production - use environment variables)
 # vnpay:

@@ -25,21 +25,21 @@ public class OwnerLocationService {
     private final CourtRepository courtRepository;
     private final UserRepository userRepository;
 
-    public List<LocationResponse> getMyLocations(String ownerId) {
+    public List<LocationResponse> getMyLocations(Integer ownerId) {
         return locationRepository.findAllByOwner_Id(ownerId)
                 .stream()
                 .map(this::toLocationResponse)
                 .collect(Collectors.toList());
     }
 
-    public LocationResponse getLocationById(Integer locationId, String ownerId) {
+    public LocationResponse getLocationById(Integer locationId, Integer ownerId) {
         Location location = locationRepository.findByIdAndOwner_Id(locationId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_FOUND));
         return toLocationResponse(location);
     }
 
     @Transactional
-    public LocationResponse createLocation(CreateLocationRequest request, String ownerId) {
+    public LocationResponse createLocation(CreateLocationRequest request, Integer ownerId) {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
@@ -61,7 +61,7 @@ public class OwnerLocationService {
     }
 
     @Transactional
-    public LocationResponse updateLocation(Integer locationId, UpdateLocationRequest request, String ownerId) {
+    public LocationResponse updateLocation(Integer locationId, UpdateLocationRequest request, Integer ownerId) {
         Location location = locationRepository.findByIdAndOwner_Id(locationId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_FOUND));
 
@@ -95,7 +95,7 @@ public class OwnerLocationService {
     }
 
     @Transactional
-    public void deleteLocation(Integer locationId, String ownerId) {
+    public void deleteLocation(Integer locationId, Integer ownerId) {
         Location location = locationRepository.findByIdAndOwner_Id(locationId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_FOUND));
 
