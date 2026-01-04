@@ -17,6 +17,7 @@ import SignUpScreen from "../screens/Authentication/SignUpScreen";
 import LoginScreen from "../screens/Authentication/LoginScreen";
 import ManagerHomeScreen from "../screens/ManagingCourt/ManagerHomeScreen";
 import RevenueScreen from "../screens/ManagingCourt/RevenueScreen";
+import CourtDetailScreen from "../screens/BookingCourt/CourtDetailScreen";
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -30,6 +31,7 @@ export type RootStackParamList = {
   ManagerHome: undefined;
   ManagerRevenue: undefined;
   ClientTabs: undefined;
+  CourtDetail: { court: any };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -50,6 +52,7 @@ export default function RootNavigator() {
           ) : (
             <>
               <Stack.Screen name="ClientTabs" component={ClientTabs} />
+              <Stack.Screen name="CourtDetail" component={CourtDetailScreen} />
             </>
           )
         ) : (

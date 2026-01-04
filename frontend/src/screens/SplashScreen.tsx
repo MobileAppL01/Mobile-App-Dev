@@ -5,6 +5,8 @@ import { RootStackParamList } from "../navigation/RootNavigator";
 import { COLORS } from "../constants/theme";
 import { useAuthStore } from "../store/useAuthStore";
 
+import LogoLight from "../assets/logos/logo_light.svg";
+
 const { width, height } = Dimensions.get("window");
 
 type Props = StackScreenProps<RootStackParamList, "Splash">;
@@ -26,11 +28,7 @@ const SplashScreen = ({ navigation }: Props) => {
 
             {/* Top Logo */}
             <View style={styles.logoContainer}>
-                <Image
-                    source={require("../assets/logos/bookinton_logo_light.png")}
-                    style={styles.logo}
-                    resizeMode="contain"
-                />
+                <LogoLight width="100%" height="100%" />
             </View>
 
             {/* Center/Bottom Images */}

@@ -20,6 +20,8 @@ import { useAuthStore } from "../../store/useAuthStore";
 // 2. Import Theme
 import { COLORS, SIZES, COMMON_STYLES, AUTH_STYLES } from "../../constants/theme";
 
+import LogoDark from "../../assets/logos/logo_dark.svg";
+
 const { width } = Dimensions.get("window");
 
 // Định nghĩa Type cho Props
@@ -73,11 +75,7 @@ const LoginScreen = ({ navigation }: LoginProps) => {
               <Ionicons name="chevron-back" size={28} color={COLORS.primary} />
             </TouchableOpacity>
 
-            <Image
-              source={require("../../assets/logos/bookinton_logo_dark.png")}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            <LogoDark width={300} height={120} />
             <View style={{ width: 28 }} />
           </View>
 

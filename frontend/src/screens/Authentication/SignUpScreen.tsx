@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { COLORS, SIZES, COMMON_STYLES, AUTH_STYLES } from "../../constants/theme";
+import LogoDark from "../../assets/logos/logo_dark.svg";
 
 // Define Props
 type SignUpProps = StackScreenProps<RootStackParamList, "SignUp">;
@@ -74,11 +75,7 @@ const SignUpScreen = ({ navigation, route }: SignUpProps) => {
               <Ionicons name="chevron-back" size={28} color={COLORS.primary} />
             </TouchableOpacity>
 
-            <Image
-              source={require("../../assets/logos/bookinton_logo_dark.png")}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            <LogoDark width={300} height={120} />
             <View style={{ width: 28 }} />
           </View>
 
