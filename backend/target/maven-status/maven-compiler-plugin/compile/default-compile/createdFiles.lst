@@ -66,12 +66,10 @@ Bookington2\demo\controller\UserController.class
 Bookington2\demo\dto\owner\RevenueStatisticsResponse.class
 Bookington2\demo\repository\PromotionRepository.class
 Bookington2\demo\enums\BookingStatus.class
-Bookington2\demo\config\FirebaseMessagingConfiguration.class
 Bookington2\demo\dto\owner\PromotionResponse.class
 Bookington2\demo\filter\JwtAuthFilter.class
 Bookington2\demo\service\OwnerPromotionService.class
 Bookington2\demo\dto\CourtDTO.class
-Bookington2\demo\service\NotificationService.class
 Bookington2\demo\dto\request\UserUpdateRequest.class
 Bookington2\demo\dto\player\CreateBookingRequest.class
 Bookington2\demo\dto\request\UserUpdateRequest$UserUpdateRequestBuilder.class
