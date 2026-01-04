@@ -23,7 +23,7 @@ public class OwnerCourtService {
     private final CourtRepository courtRepository;
     private final LocationRepository locationRepository;
 
-    public List<CourtResponse> getCourtsByLocation(Integer locationId, String ownerId) {
+    public List<CourtResponse> getCourtsByLocation(Integer locationId, Integer ownerId) {
         // Verify owner owns this location
         if (!locationRepository.existsByIdAndOwner_Id(locationId, ownerId)) {
             throw new AppException(ErrorCode.LOCATION_NOT_FOUND);
@@ -35,7 +35,7 @@ public class OwnerCourtService {
                 .collect(Collectors.toList());
     }
 
-    public List<CourtResponse> getAllMyCourts(String ownerId) {
+    public List<CourtResponse> getAllMyCourts(Integer ownerId) {
         return courtRepository.findAllByLocation_Owner_IdAndDeletedFalse(ownerId)
                 .stream()
                 .map(this::toCourtResponse)
@@ -43,7 +43,7 @@ public class OwnerCourtService {
     }
 
     @Transactional
-    public CourtResponse createCourt(Integer locationId, CreateCourtRequest request, String ownerId) {
+    public CourtResponse createCourt(Integer locationId, CreateCourtRequest request, Integer ownerId) {
         Location location = locationRepository.findByIdAndOwner_Id(locationId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_FOUND));
 
@@ -59,7 +59,7 @@ public class OwnerCourtService {
     }
 
     @Transactional
-    public CourtResponse updateCourtStatus(Integer courtId, CourtStatus status, String ownerId) {
+    public CourtResponse updateCourtStatus(Integer courtId, CourtStatus status, Integer ownerId) {
         Court court = courtRepository.findByIdAndLocation_Owner_IdAndDeletedFalse(courtId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.COURT_NOT_FOUND));
 
@@ -69,7 +69,7 @@ public class OwnerCourtService {
     }
 
     @Transactional
-    public void deleteCourt(Integer courtId, String ownerId) {
+    public void deleteCourt(Integer courtId, Integer ownerId) {
         Court court = courtRepository.findByIdAndLocation_Owner_IdAndDeletedFalse(courtId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.COURT_NOT_FOUND));
 

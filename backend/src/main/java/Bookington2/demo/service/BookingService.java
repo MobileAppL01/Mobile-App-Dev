@@ -34,7 +34,7 @@ public class BookingService {
     private BookingDTO toBookingDTO(Booking booking) {
         return new BookingDTO(booking.getCourt().getName(),booking.getCourt().getLocation().getName(),booking.getStartTimeSlot(),booking.getEndTimeSlot(),booking.getStatus(),booking.getBookingDate());
     }
-    public List<BookingDTO> getBookingHistory(String userId) {
+    public List<BookingDTO> getBookingHistory(Integer userId) {
         return bookingRepository.findAllByPlayer_Id(userId).stream().map(this::toBookingDTO).toList();
     }
     public List<Integer> getAvailableTimeSlotsOfCourtAtDate(int courtId, LocalDate bookingDate) {

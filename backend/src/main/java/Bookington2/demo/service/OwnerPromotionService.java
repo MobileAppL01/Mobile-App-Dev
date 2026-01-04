@@ -22,7 +22,7 @@ public class OwnerPromotionService {
     private final PromotionRepository promotionRepository;
     private final LocationRepository locationRepository;
 
-    public List<PromotionResponse> getMyPromotions(String ownerId, Integer locationId) {
+    public List<PromotionResponse> getMyPromotions(Integer ownerId, Integer locationId) {
         List<Promotion> promotions;
         if (locationId != null) {
             promotions = promotionRepository.findAllByOwnerIdAndLocationId(ownerId, locationId);
@@ -35,14 +35,14 @@ public class OwnerPromotionService {
                 .collect(Collectors.toList());
     }
 
-    public PromotionResponse getPromotionById(Integer promotionId, String ownerId) {
+    public PromotionResponse getPromotionById(Integer promotionId, Integer ownerId) {
         Promotion promotion = promotionRepository.findByIdAndOwnerId(promotionId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
         return toPromotionResponse(promotion);
     }
 
     @Transactional
-    public PromotionResponse createPromotion(CreatePromotionRequest request, String ownerId) {
+    public PromotionResponse createPromotion(CreatePromotionRequest request, Integer ownerId) {
         // Verify owner owns this location
         Location location = locationRepository.findByIdAndOwner_Id(request.getLocationId(), ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.LOCATION_NOT_FOUND));
@@ -73,7 +73,7 @@ public class OwnerPromotionService {
     }
 
     @Transactional
-    public PromotionResponse togglePromotionStatus(Integer promotionId, String ownerId) {
+    public PromotionResponse togglePromotionStatus(Integer promotionId, Integer ownerId) {
         Promotion promotion = promotionRepository.findByIdAndOwnerId(promotionId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
 
@@ -83,7 +83,7 @@ public class OwnerPromotionService {
     }
 
     @Transactional
-    public void deletePromotion(Integer promotionId, String ownerId) {
+    public void deletePromotion(Integer promotionId, Integer ownerId) {
         Promotion promotion = promotionRepository.findByIdAndOwnerId(promotionId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.PROMOTION_NOT_FOUND));
 

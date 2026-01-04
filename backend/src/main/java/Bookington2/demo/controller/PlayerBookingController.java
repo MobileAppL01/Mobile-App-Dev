@@ -4,6 +4,7 @@ import Bookington2.demo.dto.player.*;
 import Bookington2.demo.dto.request.APIResponse;
 import Bookington2.demo.enums.BookingStatus;
 import Bookington2.demo.service.PlayerBookingService;
+import Bookington2.demo.service.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,12 +13,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasAnyRole('PLAYER')")
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Tag(name = "Player Booking API", description = "API đặt sân cho người chơi")
@@ -26,9 +31,11 @@ public class PlayerBookingController {
     private final PlayerBookingService bookingService;
 
     // Tạm thời hard-code playerId, sau này sẽ lấy từ JWT Token
-    private String getCurrentPlayerId() {
-        // TODO: Lấy từ SecurityContext khi implement authentication
-        return "player-1";
+    private Integer getCurrentPlayerId() {
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        return ((UserDetailsImpl) auth.getPrincipal()).getId();
     }
 
     // ==================== AVAILABILITY API ====================

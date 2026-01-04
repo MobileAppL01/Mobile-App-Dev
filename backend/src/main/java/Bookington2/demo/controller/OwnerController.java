@@ -4,10 +4,7 @@ import Bookington2.demo.dto.owner.*;
 import Bookington2.demo.dto.request.APIResponse;
 import Bookington2.demo.enums.BookingStatus;
 import Bookington2.demo.enums.CourtStatus;
-import Bookington2.demo.service.OwnerBookingService;
-import Bookington2.demo.service.OwnerCourtService;
-import Bookington2.demo.service.OwnerLocationService;
-import Bookington2.demo.service.OwnerPromotionService;
+import Bookington2.demo.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,12 +13,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasAnyRole('OWNER')")
 @RequestMapping("/api/v1/owner")
 @RequiredArgsConstructor
 @Tag(name = "Owner API", description = "API cho chủ sân quản lý cơ sở, sân, booking và khuyến mãi")
@@ -33,9 +34,12 @@ public class OwnerController {
     private final OwnerPromotionService promotionService;
 
     // Tạm thời hard-code ownerId, sau này sẽ lấy từ JWT Token
-    private String getCurrentOwnerId() {
+    private Integer getCurrentOwnerId() {
         // TODO: Lấy từ SecurityContext khi implement authentication
-        return "owner-1";
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        return ((UserDetailsImpl) auth.getPrincipal()).getId();
     }
 
     // ==================== LOCATION APIS ====================

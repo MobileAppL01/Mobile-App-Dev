@@ -1,5 +1,7 @@
 package Bookington2.demo.entity;
 
+import Bookington2.demo.enums.CourtStatus;
+import Bookington2.demo.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,17 +14,14 @@ import lombok.*;
 @AllArgsConstructor // <--- QUAN TRỌNG: Để @Builder hoạt động
 public class User {
     @Id
-    @GeneratedValue
-    private String id;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     // Các trường khác...
-    private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String email;
     private String phone;
-    @ManyToOne
-    @JoinColumn(name="user_role")
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 }

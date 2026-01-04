@@ -21,21 +21,21 @@ public class OwnerBookingService {
 
     private final BookingRepository bookingRepository;
 
-    public List<BookingResponse> getBookings(String ownerId, Integer locationId, LocalDate date, BookingStatus status) {
+    public List<BookingResponse> getBookings(Integer ownerId, Integer locationId, LocalDate date, BookingStatus status) {
         return bookingRepository.findAllByOwnerWithFilters(ownerId, locationId, date, status)
                 .stream()
                 .map(this::toBookingResponse)
                 .collect(Collectors.toList());
     }
 
-    public BookingResponse getBookingById(Integer bookingId, String ownerId) {
+    public BookingResponse getBookingById(Integer bookingId, Integer ownerId) {
         Booking booking = bookingRepository.findByIdAndOwnerId(bookingId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
         return toBookingResponse(booking);
     }
 
     @Transactional
-    public BookingResponse updateBookingStatus(Integer bookingId, BookingStatus status, String ownerId) {
+    public BookingResponse updateBookingStatus(Integer bookingId, BookingStatus status, Integer ownerId) {
         Booking booking = bookingRepository.findByIdAndOwnerId(bookingId, ownerId)
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_NOT_FOUND));
 
@@ -47,7 +47,7 @@ public class OwnerBookingService {
         return toBookingResponse(booking);
     }
 
-    public RevenueStatisticsResponse getRevenueStatistics(String ownerId, int month, int year) {
+    public RevenueStatisticsResponse getRevenueStatistics(Integer ownerId, int month, int year) {
         Long totalBookings = bookingRepository.countByOwnerIdAndMonth(ownerId, month, year);
         Long canceledBookings = bookingRepository.countByOwnerIdAndStatusAndMonth(ownerId, BookingStatus.CANCELED, month, year);
         Long completedBookings = bookingRepository.countByOwnerIdAndStatusAndMonth(ownerId, BookingStatus.COMPLETED, month, year);

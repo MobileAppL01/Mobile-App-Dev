@@ -13,13 +13,13 @@ import java.util.Optional;
 public interface PromotionRepository extends JpaRepository<Promotion, Integer> {
 
     @Query("SELECT p FROM Promotion p WHERE p.location.owner.id = :ownerId")
-    List<Promotion> findAllByOwnerId(@Param("ownerId") String ownerId);
+    List<Promotion> findAllByOwnerId(@Param("ownerId") Integer ownerId);
 
     @Query("SELECT p FROM Promotion p WHERE p.location.owner.id = :ownerId AND p.location.id = :locationId")
-    List<Promotion> findAllByOwnerIdAndLocationId(@Param("ownerId") String ownerId, @Param("locationId") Integer locationId);
+    List<Promotion> findAllByOwnerIdAndLocationId(@Param("ownerId") Integer ownerId, @Param("locationId") Integer locationId);
 
     @Query("SELECT p FROM Promotion p WHERE p.id = :promotionId AND p.location.owner.id = :ownerId")
-    Optional<Promotion> findByIdAndOwnerId(@Param("promotionId") Integer promotionId, @Param("ownerId") String ownerId);
+    Optional<Promotion> findByIdAndOwnerId(@Param("promotionId") Integer promotionId, @Param("ownerId") Integer ownerId);
 
     boolean existsByCode(String code);
 
