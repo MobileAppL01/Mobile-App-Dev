@@ -17,6 +17,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../navigation/RootNavigator";
 import { useAuthStore } from "../../store/useAuthStore";
 
+import LogoLight from "../../assets/logos/logo_light.svg";
+
 const { width, height } = Dimensions.get("window");
 
 // Define the Props type
@@ -33,11 +35,7 @@ const OnboardingScreenThird = ({ navigation }: Props) => {
       <StatusBar barStyle="light-content" />
 
       <View style={styles.headerContainer}>
-        <Image
-          source={require("../../assets/logos/bookinton_logo_light.png")}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <LogoLight width={width * 0.6} height="100%" />
       </View>
 
       <View style={styles.imageContainer}>
