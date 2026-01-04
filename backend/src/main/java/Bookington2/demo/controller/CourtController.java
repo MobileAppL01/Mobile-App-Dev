@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/court")
+@PreAuthorize("hasAnyRole('PLAYER','OWNER')")
+@RequestMapping("/api/v1/court")
 public class CourtController {
     @Autowired
     CourtService courtService;
-    @PreAuthorize("hasAnyRole('PLAYER','OWNER')")
+
     @GetMapping("/{locationId}")
-    public List<CourtDTO> getCourts(@PathVariable Integer locationId){
+    public List<CourtDTO> getCourts(@PathVariable Integer locationId) {
         return courtService.getListCourtByLocationId(locationId);
     }
 }
