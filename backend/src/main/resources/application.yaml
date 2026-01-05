@@ -5,11 +5,6 @@ spring:
      url: ${SPRING_DATASOURCE_URL}
      username: ${SPRING_DATASOURCE_USERNAME}
      password:  ${SPRING_DATASOURCE_PASSWORD}
-
-#    url: jdbc:postgresql://localhost:5432/mobile
-#    username: postgres
-#    password: lengocnhuyN@
-
      driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -40,13 +35,25 @@ server:
   port: 8080
 
 
-firebase:
-  enabled: false
+bank:
+  bin: "970422"
+  account:
+    number: "0376929681"
+    name: "Pham Thanh Phong"
+  template: "compact"
+
+sepay:
+  api:
+    url: "https://my.sepay.vn/userapi"
+    token: "DL4YP5V0XTEITVEBYLNPU4G1DRQ28KF3WKUTM6RHCQ9EL5FN76BTJJWFUEL83QPR"
+  polling:
+    timeout: 900000
+
+payment:
+  polling:
+    interval: 3000
+  verification:
+    maxRetries: 5
 
 
-# VNPAY Configuration (Sandbox)
-# vnpay:
-#   tmn-code: "CGXZLS0Z"
-#   hash-secret: "XNBCJFAKAZQSGTARRLGCHVZWCIOIGSHN"
-#   url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-#   return-url: "http://localhost:8080/api/v1/payment/vnpay/return"
+

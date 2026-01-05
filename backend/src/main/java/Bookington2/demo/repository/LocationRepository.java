@@ -2,6 +2,7 @@ package Bookington2.demo.repository;
 
 import Bookington2.demo.dto.OpenTimeDTO;
 import Bookington2.demo.entity.Location;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,10 +16,22 @@ public interface LocationRepository extends JpaRepository<Location, Integer> {
 
     @Query(value = """
             SELECT * FROM location 
-            WHERE unaccent(lower(address)) 
-                  LIKE CONCAT('%', unaccent(lower(:keyword)), '%')
+            WHERE CAST(address AS TEXT) ILIKE CONCAT('%', :keyword, '%')
             """, nativeQuery = true)
     List<Location> searchByAddress(@Param("keyword") String keyword);
+
+    @Query(value = """
+            SELECT * FROM location l
+            WHERE (:province IS NULL OR CAST(l.address AS TEXT) ILIKE CONCAT('%', :province, '%'))
+            AND (:district IS NULL OR CAST(l.address AS TEXT) ILIKE CONCAT('%', :district, '%'))
+            AND (:minPrice IS NULL OR l.price_per_hour >= :minPrice)
+            AND (:maxPrice IS NULL OR l.price_per_hour <= :maxPrice)
+            """, nativeQuery = true)
+    List<Location> findLocationsWithFilters(@Param("province") String province,
+                                           @Param("district") String district,
+                                           @Param("minPrice") Integer minPrice,
+                                           @Param("maxPrice") Integer maxPrice,
+                                           Pageable pageable);
 
     OpenTimeDTO findLocationById(Integer id);
 
