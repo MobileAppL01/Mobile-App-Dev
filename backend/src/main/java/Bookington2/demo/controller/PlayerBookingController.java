@@ -1,8 +1,11 @@
 package Bookington2.demo.controller;
 
+import Bookington2.demo.dto.notification.BriefNotificationResponse;
+import Bookington2.demo.dto.notification.NotificationDetailResponse;
 import Bookington2.demo.dto.player.*;
 import Bookington2.demo.dto.request.APIResponse;
 import Bookington2.demo.enums.BookingStatus;
+import Bookington2.demo.service.NotificationService;
 import Bookington2.demo.service.PlayerBookingService;
 import Bookington2.demo.service.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +33,8 @@ import java.util.List;
 public class PlayerBookingController {
 
     private final PlayerBookingService bookingService;
-
+    @Autowired
+    private NotificationService notificationService;
     // Tạm thời hard-code playerId, sau này sẽ lấy từ JWT Token
     private Integer getCurrentPlayerId() {
         Authentication auth =
@@ -136,6 +141,22 @@ public class PlayerBookingController {
                 .message(response.getMessage())
                 .result(response)
                 .build());
+    }
+    @GetMapping("/notifications")
+    @Operation(
+            summary = "Lấy danh sách thông báo",
+            description = "Danh sách thông báo tóm gọn có trường checked để biết người dùng đã đọc hay chưa"
+    )
+    public ResponseEntity<List<BriefNotificationResponse>> getBriefNotifications(){
+        return notificationService.getListNotification(getCurrentPlayerId());
+    }
+    @GetMapping("/notifications/{notification_id}")
+    @Operation(
+            summary = "Lấy chi tiết thông báo",
+            description = "Thông tin chi tiết của một thông báo"
+    )
+    public ResponseEntity<NotificationDetailResponse> getBriefNotifications(@PathVariable Integer notification_id) {
+        return notificationService.getNotification(notification_id, getCurrentPlayerId());
     }
 }
 

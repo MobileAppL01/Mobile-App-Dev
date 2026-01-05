@@ -24,8 +24,7 @@ public class LocationService {
                 location.getName(),
                 location.getAddress(),
                 location.getRating() != null ? location.getRating() : 0.0f,
-                location.getPricePerHour() != null ? location.getPricePerHour() : 0
-        );
+                location.getPricePerHour() != null ? location.getPricePerHour() : 0);
     }
 
     public List<LocationDTO> getLocationsByAddress(String address) {
@@ -34,5 +33,9 @@ public class LocationService {
 
     public OpenTimeDTO getOpenTimeByLocationId(Integer id) {
         return locationRepository.findLocationById(id);
+    }
+
+    public LocationDTO getLocationById(Integer id) {
+        return locationRepository.findById(id).map(this::toLocationDto).orElse(null);
     }
 }

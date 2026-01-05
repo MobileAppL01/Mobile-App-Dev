@@ -23,11 +23,11 @@ public class SecurityConfig {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
-
     @Bean
     public JwtAuthFilter authenticationJwtTokenFilter() {
         return new JwtAuthFilter();
     }
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -47,15 +47,18 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/v1/auth","api/v1/register/owners","api/v1/register/players","/swagger-ui/**","/swagger-ui.html", "/v3/api-docs/**", "/webjars/**",
-                                        "/api-docs/**", "/swagger-resources/**").permitAll()
-                                .anyRequest().authenticated()
-                );
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/auth", "/api/v1/register/owners", "/api/v1/register/players",
+                                "/api/v1/location/**", "/api/v1/court/**", "/swagger-ui/**", "/swagger-ui.html",
+                                "/v3/api-docs/**", "/webjars/**",
+                                "/api-docs/**", "/swagger-resources/**")
+                        .permitAll()
+                        .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
 
