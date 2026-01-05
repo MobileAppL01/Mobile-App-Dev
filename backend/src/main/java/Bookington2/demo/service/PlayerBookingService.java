@@ -1,5 +1,6 @@
 package Bookington2.demo.service;
 
+import Bookington2.demo.dto.notification.CreatePaymentSuccessNotificationPayload;
 import Bookington2.demo.dto.player.*;
 import Bookington2.demo.entity.Booking;
 import Bookington2.demo.entity.Court;
@@ -7,6 +8,7 @@ import Bookington2.demo.entity.Location;
 import Bookington2.demo.entity.User;
 import Bookington2.demo.enums.BookingStatus;
 import Bookington2.demo.enums.CourtStatus;
+import Bookington2.demo.enums.NotificationType;
 import Bookington2.demo.exception.AppException;
 import Bookington2.demo.exception.ErrorCode;
 import Bookington2.demo.repository.BookingRepository;
@@ -14,6 +16,7 @@ import Bookington2.demo.repository.CourtRepository;
 import Bookington2.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,8 @@ public class PlayerBookingService {
     private final BookingRepository bookingRepository;
     private final CourtRepository courtRepository;
     private final UserRepository userRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     /**
      * Check court availability for a specific date
@@ -151,7 +156,11 @@ public class PlayerBookingService {
                 .build();
 
         booking = bookingRepository.save(booking);
-
+        CreatePaymentSuccessNotificationPayload createPaymentSuccessNotificationPayload = new CreatePaymentSuccessNotificationPayload();
+        createPaymentSuccessNotificationPayload.setBookingId(booking.getId());
+        createPaymentSuccessNotificationPayload.setUserId(player.getId());
+        createPaymentSuccessNotificationPayload.setType(NotificationType.PAYMENT_SUCCESS);
+        notificationService.createNotification(createPaymentSuccessNotificationPayload);
         log.info("Created booking {} for player {} on court {} date {}",
                 booking.getId(), playerId, court.getName(), request.getBookingDate());
 
