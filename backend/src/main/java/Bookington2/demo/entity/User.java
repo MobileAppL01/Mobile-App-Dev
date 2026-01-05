@@ -22,6 +22,21 @@ public class User {
     private String lastName;
     private String email;
     private String phone;
+    private String avatar;
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    // Helper method for getting full name (not for JPQL)
+    public String getFullName() {
+        if (firstName == null && lastName == null) {
+            return "";
+        }
+        if (firstName == null) {
+            return lastName;
+        }
+        if (lastName == null) {
+            return firstName;
+        }
+        return firstName + " " + lastName;
+    }
 }

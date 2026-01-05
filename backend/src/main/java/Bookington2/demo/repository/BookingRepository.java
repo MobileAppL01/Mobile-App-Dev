@@ -48,8 +48,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         @Param("status") BookingStatus status,
                         @Param("fromDate") LocalDate fromDate,
                         @Param("toDate") LocalDate toDate);
+        Optional<Booking> findTopByStatusOrderByCreatedAtDesc(BookingStatus status);
 
-        // Find booking by ID and player ID
+        Optional<Booking> findByPaymentIdOrTransactionId(String paymentId, String transactionId);
+
+    // Find booking by ID and player ID
         Optional<Booking> findByIdAndPlayer_Id(Integer bookingId, Integer playerId);
 
         // ==================== OWNER BOOKING APIs ====================
@@ -104,4 +107,15 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         "AND b.status = 'COMPLETED' AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year")
         Long sumRevenueByOwnerIdAndMonth(@Param("ownerId") Integer ownerId, @Param("month") int month,
                         @Param("year") int year);
+
+        // Additional queries for public API
+        @Query("SELECT DISTINCT b.startHours FROM Booking b WHERE b.court.id = :courtId AND b.bookingDate = :date AND b.status <> 'CANCELED'")
+        List<List<Integer>> findStartHoursByCourtAndDate(@Param("courtId") Integer courtId, @Param("date") LocalDate date);
+
+        @Query(value = """
+                SELECT UNNEST(start_hours) as hour 
+                FROM booking 
+                WHERE court_id = :courtId AND booking_date = :date AND status <> 'CANCELED'
+                """, nativeQuery = true)
+        List<Integer> findBookedHoursByCourtAndDate(@Param("courtId") Integer courtId, @Param("date") LocalDate date);
 }

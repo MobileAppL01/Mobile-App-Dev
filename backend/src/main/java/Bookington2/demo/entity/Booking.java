@@ -41,6 +41,13 @@ public class Booking {
     @Column(name = "total_price")
     private Float totalPrice;
 
+    @Column(name = "payment_id")
+    private String paymentId;
+
+    @Column(name = "transaction_id")
+    private String transactionId;
+
+
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.PENDING;
 
