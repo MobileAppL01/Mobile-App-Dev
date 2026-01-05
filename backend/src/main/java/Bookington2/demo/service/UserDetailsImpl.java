@@ -25,19 +25,24 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
     private String email;
+    private String fullName;
+    private String phone;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_"+user.getRole()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
 
         return new UserDetailsImpl(
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getEmail(),
+                user.getFullName(),
+                user.getPhone(),
                 authorities);
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

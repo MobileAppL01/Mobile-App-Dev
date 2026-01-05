@@ -38,8 +38,10 @@ public class UserService {
     private AuthenticationManager authenticationManager;
     @Autowired
     JwtUtils jwtUtils;
+
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -53,10 +55,13 @@ public class UserService {
                 .token(jwt)
                 .type("Bearer")
                 .roles(roles)
+                .fullName(userDetails.getFullName())
+                .phone(userDetails.getPhone())
                 .build();
 
         return ResponseEntity.ok(signInResponseDto);
     }
+
     public User createUser(UserCreationRequest request, String Role) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AppException(ErrorCode.USER_EXITSED);
@@ -79,7 +84,6 @@ public class UserService {
         User user = getUsers(userId);
         userMapper.updateUser(user, request);
 
-
         return userRepository.save(user);
     }
 
@@ -94,10 +98,9 @@ public class UserService {
         user.setPhone(request.getPhone());
         user.setLastName(request.getLastName());
         user.setFirstName(request.getFirstName());
-        if(Role.equals("PLAYER")){
+        if (Role.equals("PLAYER")) {
             user.setRole(UserRole.PLAYER);
-        }
-        else{
+        } else {
             user.setRole(UserRole.OWNER);
         }
         return user;
