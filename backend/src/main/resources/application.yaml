@@ -2,9 +2,7 @@ spring:
   application:
     name: demo
   datasource:
-     url: ${SPRING_DATASOURCE_URL}
-     username: ${SPRING_DATASOURCE_USERNAME}
-     password:  ${SPRING_DATASOURCE_PASSWORD}
+
      driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -54,6 +52,12 @@ payment:
     interval: 3000
   verification:
     maxRetries: 5
+
+# Cloudinary configuration
+cloudinary:
+  cloud_name: ${CLOUDINARY_CLOUD_NAME:mediaflows_1d2293bc-4184-499c-811e-13058e03f611}
+  api_key: ${CLOUDINARY_API_KEY:111958593566962}
+  api_secret: ${CLOUDINARY_API_SECRET:4fIPnYcF_wBkrVxG7r9WJiJ7Egg}
 
 
 
