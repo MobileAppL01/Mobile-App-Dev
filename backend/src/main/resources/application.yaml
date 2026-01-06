@@ -5,6 +5,9 @@ spring:
      url: ${SPRING_DATASOURCE_URL}
      username: ${SPRING_DATASOURCE_USERNAME}
      password:  ${SPRING_DATASOURCE_PASSWORD}
+#     url: jdbc:postgresql://localhost:5433/mobile
+#     username: postgres
+#     password: yasuo20gg
      driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -20,7 +23,17 @@ spring:
       mode: always
       data-locations: classpath:data.sql
       encoding: UTF-8
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: bookinton.hcmut@gmail.com
+    password: lpdefbstszamxrmv
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 # Swagger/OpenAPI configuration
 springdoc:
   api-docs:
