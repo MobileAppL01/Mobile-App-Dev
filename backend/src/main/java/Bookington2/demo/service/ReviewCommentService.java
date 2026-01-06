@@ -52,7 +52,7 @@ public class ReviewCommentService {
 
         // Validate location exists
         Location location = locationRepository.findById(request.getLocationId())
-            .orElseThrow(() -> new RuntimeException("Location not found with id: " + request.getLocationId()));
+                .orElseThrow(() -> new RuntimeException("Location not found with id: " + request.getLocationId()));
 
         // Check if user already reviewed this location
         if (reviewRepository.findByUserIdAndLocationId(currentUser.getId(), request.getLocationId()).isPresent()) {
@@ -61,24 +61,24 @@ public class ReviewCommentService {
 
         // Create review
         Review review = Review.builder()
-            .user(currentUser)
-            .location(location)
-            .rating(request.getRating())
-            .content(request.getContent())
-            .build();
+                .user(currentUser)
+                .location(location)
+                .rating(request.getRating())
+                .content(request.getContent())
+                .build();
 
         Review savedReview = reviewRepository.save(review);
-        
+
         return toReviewDTO(savedReview);
     }
 
     public List<ReviewDTO> getUserReviews(Integer userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Review> reviews = reviewRepository.findByUserId(userId, pageable);
-        
+
         return reviews.getContent().stream()
-            .map(this::toReviewDTO)
-            .collect(Collectors.toList());
+                .map(this::toReviewDTO)
+                .collect(Collectors.toList());
     }
 
     public List<ReviewDTO> getCurrentUserReviews(int page, int size) {
@@ -89,25 +89,25 @@ public class ReviewCommentService {
     public List<ReviewDTO> getLocationReviews(Integer locationId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Review> reviews = reviewRepository.findByLocationId(locationId, pageable);
-        
+
         return reviews.getContent().stream()
-            .map(this::toReviewDTO)
-            .collect(Collectors.toList());
+                .map(this::toReviewDTO)
+                .collect(Collectors.toList());
     }
 
     public ReviewDTO getReviewById(Integer reviewId) {
         Review review = reviewRepository.findById(reviewId)
-            .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
-        
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
+
         return toReviewDTO(review);
     }
 
     @Transactional
     public ReviewDTO updateReview(Integer reviewId, CreateReviewRequestDTO request) {
         User currentUser = getCurrentUser();
-        
+
         Review review = reviewRepository.findById(reviewId)
-            .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
 
         // Check ownership
         if (!review.getUser().getId().equals(currentUser.getId())) {
@@ -118,16 +118,16 @@ public class ReviewCommentService {
         review.setContent(request.getContent());
 
         Review savedReview = reviewRepository.save(review);
-        
+
         return toReviewDTO(savedReview);
     }
 
     @Transactional
     public void deleteReview(Integer reviewId) {
         User currentUser = getCurrentUser();
-        
+
         Review review = reviewRepository.findById(reviewId)
-            .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
 
         // Check ownership
         if (!review.getUser().getId().equals(currentUser.getId())) {
@@ -145,6 +145,24 @@ public class ReviewCommentService {
         return reviewRepository.countByLocationId(locationId);
     }
 
+    public Map<Integer, Long> getRatingCounts(Integer locationId) {
+        List<Object[]> queryResult = reviewRepository.countReviewsByRating(locationId);
+        Map<Integer, Long> counts = new HashMap<>();
+        // Initialize with 0
+        for (int i = 1; i <= 5; i++) {
+            counts.put(i, 0L);
+        }
+
+        for (Object[] row : queryResult) {
+            Integer rating = (Integer) row[0];
+            Long count = (Long) row[1];
+            if (rating != null && rating >= 1 && rating <= 5) {
+                counts.put(rating, count);
+            }
+        }
+        return counts;
+    }
+
     // ========================================
     // COMMENT METHODS
     // ========================================
@@ -155,14 +173,14 @@ public class ReviewCommentService {
 
         // Validate review exists
         Review review = reviewRepository.findById(request.getReviewId())
-            .orElseThrow(() -> new RuntimeException("Review not found with id: " + request.getReviewId()));
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + request.getReviewId()));
 
         // Validate parent comment if reply
         ReviewComment parentComment = null;
         if (request.getParentCommentId() != null) {
             parentComment = reviewCommentRepository.findById(request.getParentCommentId())
-                .orElseThrow(() -> new RuntimeException("Parent comment not found"));
-            
+                    .orElseThrow(() -> new RuntimeException("Parent comment not found"));
+
             // Ensure parent belongs to same review
             if (!parentComment.getReview().getId().equals(request.getReviewId())) {
                 throw new RuntimeException("Parent comment does not belong to this review");
@@ -171,21 +189,21 @@ public class ReviewCommentService {
 
         // Create comment
         ReviewComment comment = ReviewComment.builder()
-            .review(review)
-            .user(currentUser)
-            .parentComment(parentComment)
-            .content(request.getContent())
-            .build();
+                .review(review)
+                .user(currentUser)
+                .parentComment(parentComment)
+                .content(request.getContent())
+                .build();
 
         ReviewComment savedComment = reviewCommentRepository.save(comment);
-        
+
         return toCommentDTO(savedComment);
     }
 
     public List<CommentResponseDTO> getCommentsByReview(Integer reviewId) {
         // Get all comments for review
         List<ReviewComment> allComments = reviewCommentRepository.findByReviewIdOrderByCreatedAtAsc(reviewId);
-        
+
         // Build tree structure
         return buildCommentTree(allComments);
     }
@@ -193,9 +211,9 @@ public class ReviewCommentService {
     @Transactional
     public CommentResponseDTO updateComment(Integer commentId, String content) {
         User currentUser = getCurrentUser();
-        
+
         ReviewComment comment = reviewCommentRepository.findById(commentId)
-            .orElseThrow(() -> new RuntimeException("Comment not found with id: " + commentId));
+                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + commentId));
 
         // Check ownership
         if (!comment.getUser().getId().equals(currentUser.getId())) {
@@ -204,16 +222,16 @@ public class ReviewCommentService {
 
         comment.setContent(content);
         ReviewComment savedComment = reviewCommentRepository.save(comment);
-        
+
         return toCommentDTO(savedComment);
     }
 
     @Transactional
     public void deleteComment(Integer commentId) {
         User currentUser = getCurrentUser();
-        
+
         ReviewComment comment = reviewCommentRepository.findById(commentId)
-            .orElseThrow(() -> new RuntimeException("Comment not found with id: " + commentId));
+                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + commentId));
 
         // Check ownership
         if (!comment.getUser().getId().equals(currentUser.getId())) {
@@ -245,33 +263,33 @@ public class ReviewCommentService {
         // Get comments as tree
         List<ReviewComment> allComments = reviewCommentRepository.findByReviewIdOrderByCreatedAtAsc(review.getId());
         List<CommentResponseDTO> commentTree = buildCommentTree(allComments);
-        
+
         return ReviewDTO.builder()
-            .id(review.getId())
-            .userId(review.getUser().getId())
-            .userName(review.getUser().getFullName())
-            .userAvatar(review.getUser().getAvatar())
-            .locationId(review.getLocation().getId())
-            .locationName(review.getLocation().getName())
-            .rating(review.getRating())
-            .content(review.getContent())
-            .createdAt(review.getCreatedAt())
-            .comments(commentTree)
-            .build();
+                .id(review.getId())
+                .userId(review.getUser().getId())
+                .userName(review.getUser().getFullName())
+                .userAvatar(review.getUser().getAvatar())
+                .locationId(review.getLocation().getId())
+                .locationName(review.getLocation().getName())
+                .rating(review.getRating())
+                .content(review.getContent())
+                .createdAt(review.getCreatedAt())
+                .comments(commentTree)
+                .build();
     }
 
     private CommentResponseDTO toCommentDTO(ReviewComment comment) {
         return CommentResponseDTO.builder()
-            .id(comment.getId())
-            .reviewId(comment.getReview().getId())
-            .userId(comment.getUser().getId())
-            .userName(comment.getUser().getFullName())
-            .userAvatar(comment.getUser().getAvatar())
-            .content(comment.getContent())
-            .createdAt(comment.getCreatedAt())
-            .parentCommentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null)
-            .replies(new ArrayList<>())
-            .build();
+                .id(comment.getId())
+                .reviewId(comment.getReview().getId())
+                .userId(comment.getUser().getId())
+                .userName(comment.getUser().getFullName())
+                .userAvatar(comment.getUser().getAvatar())
+                .content(comment.getContent())
+                .createdAt(comment.getCreatedAt())
+                .parentCommentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null)
+                .replies(new ArrayList<>())
+                .build();
     }
 
     private List<CommentResponseDTO> buildCommentTree(List<ReviewComment> allComments) {
@@ -288,7 +306,7 @@ public class ReviewCommentService {
         // Build tree structure
         for (ReviewComment comment : allComments) {
             CommentResponseDTO dto = nodeMap.get(comment.getId());
-            
+
             if (comment.getParentComment() == null) {
                 // Root comment
                 rootComments.add(dto);
