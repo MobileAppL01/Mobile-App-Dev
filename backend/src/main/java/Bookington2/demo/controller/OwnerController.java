@@ -302,4 +302,25 @@ public class OwnerController {
                         @Parameter(description = "ID của thông báo") @PathVariable Integer id) {
                 return notificationService.getNotification(id, getCurrentOwnerId());
         }
+
+        @DeleteMapping("/notifications/{id}")
+        @Operation(summary = "Xóa thông báo", description = "Xóa một thông báo theo ID")
+        public ResponseEntity<APIResponse<Void>> deleteNotification(
+                        @Parameter(description = "ID của thông báo") @PathVariable Integer id) {
+                notificationService.deleteNotification(id, getCurrentOwnerId());
+                return ResponseEntity.ok(APIResponse.<Void>builder()
+                                .code(1000)
+                                .message("Xóa thông báo thành công")
+                                .build());
+        }
+
+        @DeleteMapping("/notifications")
+        @Operation(summary = "Xóa tất cả thông báo", description = "Xóa toàn bộ thông báo của chủ sân")
+        public ResponseEntity<APIResponse<Void>> deleteAllNotifications() {
+                notificationService.deleteAllNotifications(getCurrentOwnerId());
+                return ResponseEntity.ok(APIResponse.<Void>builder()
+                                .code(1000)
+                                .message("Đã xóa tất cả thông báo")
+                                .build());
+        }
 }

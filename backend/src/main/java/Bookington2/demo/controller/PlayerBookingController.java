@@ -32,131 +32,127 @@ import java.util.List;
 @Tag(name = "Player Booking API", description = "API đặt sân cho người chơi")
 public class PlayerBookingController {
 
-    private final PlayerBookingService bookingService;
-    @Autowired
-    private NotificationService notificationService;
-    // Tạm thời hard-code playerId, sau này sẽ lấy từ JWT Token
-    private Integer getCurrentPlayerId() {
-        Authentication auth =
-                SecurityContextHolder.getContext().getAuthentication();
+        private final PlayerBookingService bookingService;
+        @Autowired
+        private NotificationService notificationService;
 
-        return ((UserDetailsImpl) auth.getPrincipal()).getId();
-    }
+        // Tạm thời hard-code playerId, sau này sẽ lấy từ JWT Token
+        private Integer getCurrentPlayerId() {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    // ==================== AVAILABILITY API ====================
+                return ((UserDetailsImpl) auth.getPrincipal()).getId();
+        }
 
-    @GetMapping("/courts/{courtId}/availability")
-    @Operation(
-            summary = "Kiểm tra tình trạng sân trống",
-            description = "Trả về danh sách các khung giờ đã bị đặt và còn trống trong một ngày cụ thể"
-    )
-    public ResponseEntity<APIResponse<CourtAvailabilityResponse>> getCourtAvailability(
-            @Parameter(description = "ID của sân") @PathVariable Integer courtId,
-            @Parameter(description = "Ngày cần kiểm tra (yyyy-MM-dd)", required = true)
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        // ==================== AVAILABILITY API ====================
 
-        CourtAvailabilityResponse availability = bookingService.getCourtAvailability(courtId, date);
+        @GetMapping("/courts/{courtId}/availability")
+        @Operation(summary = "Kiểm tra tình trạng sân trống", description = "Trả về danh sách các khung giờ đã bị đặt và còn trống trong một ngày cụ thể")
+        public ResponseEntity<APIResponse<CourtAvailabilityResponse>> getCourtAvailability(
+                        @Parameter(description = "ID của sân") @PathVariable Integer courtId,
+                        @Parameter(description = "Ngày cần kiểm tra (yyyy-MM-dd)", required = true) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
-        return ResponseEntity.ok(APIResponse.<CourtAvailabilityResponse>builder()
-                .code(1000)
-                .message("Lấy thông tin sân trống thành công")
-                .result(availability)
-                .build());
-    }
+                CourtAvailabilityResponse availability = bookingService.getCourtAvailability(courtId, date);
 
-    // ==================== BOOKING APIs ====================
+                return ResponseEntity.ok(APIResponse.<CourtAvailabilityResponse>builder()
+                                .code(1000)
+                                .message("Lấy thông tin sân trống thành công")
+                                .result(availability)
+                                .build());
+        }
 
-    @PostMapping("/bookings")
-    @Operation(
-            summary = "Tạo yêu cầu đặt sân",
-            description = "Người dùng gửi yêu cầu đặt sân. Hệ thống tính toán giá và lưu trạng thái chờ."
-    )
-    public ResponseEntity<APIResponse<BookingDetailResponse>> createBooking(
-            @Valid @RequestBody CreateBookingRequest request) {
+        // ==================== BOOKING APIs ====================
 
-        BookingDetailResponse booking = bookingService.createBooking(request, getCurrentPlayerId());
+        @PostMapping("/bookings")
+        @Operation(summary = "Tạo yêu cầu đặt sân", description = "Người dùng gửi yêu cầu đặt sân. Hệ thống tính toán giá và lưu trạng thái chờ.")
+        public ResponseEntity<APIResponse<BookingDetailResponse>> createBooking(
+                        @Valid @RequestBody CreateBookingRequest request) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(APIResponse.<BookingDetailResponse>builder()
-                        .code(1000)
-                        .message("Đặt sân thành công, vui lòng thanh toán")
-                        .result(booking)
-                        .build());
-    }
+                BookingDetailResponse booking = bookingService.createBooking(request, getCurrentPlayerId());
 
-    @GetMapping("/bookings/my-history")
-    @Operation(
-            summary = "Xem lịch sử đặt sân của tôi",
-            description = "Lấy danh sách booking của user đang đăng nhập"
-    )
-    public ResponseEntity<APIResponse<List<MyBookingResponse>>> getMyBookings(
-            @Parameter(description = "Lọc theo trạng thái")
-            @RequestParam(required = false) BookingStatus status,
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(APIResponse.<BookingDetailResponse>builder()
+                                                .code(1000)
+                                                .message("Đặt sân thành công, vui lòng thanh toán")
+                                                .result(booking)
+                                                .build());
+        }
 
-            @Parameter(description = "Từ ngày (yyyy-MM-dd)")
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+        @GetMapping("/bookings/my-history")
+        @Operation(summary = "Xem lịch sử đặt sân của tôi", description = "Lấy danh sách booking của user đang đăng nhập")
+        public ResponseEntity<APIResponse<List<MyBookingResponse>>> getMyBookings(
+                        @Parameter(description = "Lọc theo trạng thái") @RequestParam(required = false) BookingStatus status,
 
-            @Parameter(description = "Đến ngày (yyyy-MM-dd)")
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+                        @Parameter(description = "Từ ngày (yyyy-MM-dd)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
 
-        List<MyBookingResponse> bookings = bookingService.getMyBookings(
-                getCurrentPlayerId(), status, fromDate, toDate);
+                        @Parameter(description = "Đến ngày (yyyy-MM-dd)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
 
-        return ResponseEntity.ok(APIResponse.<List<MyBookingResponse>>builder()
-                .code(1000)
-                .message("Lấy lịch sử đặt sân thành công")
-                .result(bookings)
-                .build());
-    }
+                List<MyBookingResponse> bookings = bookingService.getMyBookings(
+                                getCurrentPlayerId(), status, fromDate, toDate);
 
-    @GetMapping("/bookings/{id}")
-    @Operation(
-            summary = "Xem chi tiết booking",
-            description = "Lấy thông tin chi tiết của một booking"
-    )
-    public ResponseEntity<APIResponse<BookingDetailResponse>> getBookingDetail(
-            @Parameter(description = "ID của booking") @PathVariable Integer id) {
+                return ResponseEntity.ok(APIResponse.<List<MyBookingResponse>>builder()
+                                .code(1000)
+                                .message("Lấy lịch sử đặt sân thành công")
+                                .result(bookings)
+                                .build());
+        }
 
-        BookingDetailResponse booking = bookingService.getBookingDetail(id, getCurrentPlayerId());
+        @GetMapping("/bookings/{id}")
+        @Operation(summary = "Xem chi tiết booking", description = "Lấy thông tin chi tiết của một booking")
+        public ResponseEntity<APIResponse<BookingDetailResponse>> getBookingDetail(
+                        @Parameter(description = "ID của booking") @PathVariable Integer id) {
 
-        return ResponseEntity.ok(APIResponse.<BookingDetailResponse>builder()
-                .code(1000)
-                .message("Lấy thông tin booking thành công")
-                .result(booking)
-                .build());
-    }
+                BookingDetailResponse booking = bookingService.getBookingDetail(id, getCurrentPlayerId());
 
-    @PutMapping("/bookings/{id}/cancel")
-    @Operation(
-            summary = "Hủy đặt sân",
-            description = "Người dùng tự hủy lịch đặt. Chỉ được hủy khi trạng thái là PENDING hoặc CONFIRMED"
-    )
-    public ResponseEntity<APIResponse<CancelBookingResponse>> cancelBooking(
-            @Parameter(description = "ID của booking") @PathVariable Integer id) {
+                return ResponseEntity.ok(APIResponse.<BookingDetailResponse>builder()
+                                .code(1000)
+                                .message("Lấy thông tin booking thành công")
+                                .result(booking)
+                                .build());
+        }
 
-        CancelBookingResponse response = bookingService.cancelBooking(id, getCurrentPlayerId());
+        @PutMapping("/bookings/{id}/cancel")
+        @Operation(summary = "Hủy đặt sân", description = "Người dùng tự hủy lịch đặt. Chỉ được hủy khi trạng thái là PENDING hoặc CONFIRMED")
+        public ResponseEntity<APIResponse<CancelBookingResponse>> cancelBooking(
+                        @Parameter(description = "ID của booking") @PathVariable Integer id) {
 
-        return ResponseEntity.ok(APIResponse.<CancelBookingResponse>builder()
-                .code(1000)
-                .message(response.getMessage())
-                .result(response)
-                .build());
-    }
-    @GetMapping("/notifications")
-    @Operation(
-            summary = "Lấy danh sách thông báo",
-            description = "Danh sách thông báo tóm gọn có trường checked để biết người dùng đã đọc hay chưa"
-    )
-    public ResponseEntity<List<BriefNotificationResponse>> getBriefNotifications(){
-        return notificationService.getListNotification(getCurrentPlayerId());
-    }
-    @GetMapping("/notifications/{notification_id}")
-    @Operation(
-            summary = "Lấy chi tiết thông báo",
-            description = "Thông tin chi tiết của một thông báo"
-    )
-    public ResponseEntity<NotificationDetailResponse> getBriefNotifications(@PathVariable Integer notification_id) {
-        return notificationService.getNotification(notification_id, getCurrentPlayerId());
-    }
+                CancelBookingResponse response = bookingService.cancelBooking(id, getCurrentPlayerId());
+
+                return ResponseEntity.ok(APIResponse.<CancelBookingResponse>builder()
+                                .code(1000)
+                                .message(response.getMessage())
+                                .result(response)
+                                .build());
+        }
+
+        @GetMapping("/notifications")
+        @Operation(summary = "Lấy danh sách thông báo", description = "Danh sách thông báo tóm gọn có trường checked để biết người dùng đã đọc hay chưa")
+        public ResponseEntity<List<BriefNotificationResponse>> getBriefNotifications() {
+                return notificationService.getListNotification(getCurrentPlayerId());
+        }
+
+        @GetMapping("/notifications/{notification_id}")
+        @Operation(summary = "Lấy chi tiết thông báo", description = "Thông tin chi tiết của một thông báo")
+        public ResponseEntity<NotificationDetailResponse> getBriefNotifications(@PathVariable Integer notification_id) {
+                return notificationService.getNotification(notification_id, getCurrentPlayerId());
+        }
+
+        @DeleteMapping("/notifications/{id}")
+        @Operation(summary = "Xóa thông báo", description = "Xóa một thông báo theo ID")
+        public ResponseEntity<APIResponse<Void>> deleteNotification(@PathVariable Integer id) {
+                notificationService.deleteNotification(id, getCurrentPlayerId());
+                return ResponseEntity.ok(APIResponse.<Void>builder()
+                                .code(1000)
+                                .message("Xóa thông báo thành công")
+                                .build());
+        }
+
+        @DeleteMapping("/notifications")
+        @Operation(summary = "Xóa tất cả thông báo", description = "Xóa toàn bộ thông báo của người chơi")
+        public ResponseEntity<APIResponse<Void>> deleteAllNotifications() {
+                notificationService.deleteAllNotifications(getCurrentPlayerId());
+                return ResponseEntity.ok(APIResponse.<Void>builder()
+                                .code(1000)
+                                .message("Đã xóa tất cả thông báo")
+                                .build());
+        }
 }
-

@@ -10,6 +10,9 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
     List<Notification> findByUserId(Integer userId);
+
     @Query("SELECT n FROM Notification n where n.user.id = :userId or n.type = 'PROMOTION'")
     List<Notification> findByUserIdOrIsPromotionType(Integer userId);
+
+    void deleteByUserId(Integer userId);
 }
