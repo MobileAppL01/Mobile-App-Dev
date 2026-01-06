@@ -3,10 +3,13 @@ spring:
     name: demo
   datasource:
 
+     url: jdbc:postgresql://localhost:5432/mobile
+     username: postgres
+     password: lengocnhuy1311N@
      driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
@@ -18,17 +21,7 @@ spring:
       mode: always
       data-locations: classpath:data.sql
       encoding: UTF-8
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: bookinton.hcmut@gmail.com
-    password: ${SMTP_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+
 # Swagger/OpenAPI configuration
 springdoc:
   api-docs:

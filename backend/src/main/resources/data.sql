@@ -7,7 +7,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent;
 -- ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================
--- 2. Insert Users
+-- 2. Insert Users (với avatar)
 -- ==========================================
 INSERT INTO t_user (id, password, full_name, email, phone, role)
 VALUES
@@ -19,7 +19,7 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================
--- 3. Insert Locations
+-- 3. Insert Locations (với ảnh mẫu)
 -- ==========================================
 INSERT INTO location (id, name, address, description, image, rating, price_per_hour, open_time, close_time, status, owner_id)
 VALUES
