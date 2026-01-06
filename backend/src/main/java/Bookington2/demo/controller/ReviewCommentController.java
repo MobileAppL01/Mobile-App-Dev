@@ -126,7 +126,7 @@ public class ReviewCommentController {
     // ========================================
 
     @PostMapping("/comments")
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasAnyRole('PLAYER', 'OWNER', 'MANAGER')")
     @Operation(summary = "Create a comment", description = "Create a new comment on a review (or reply to another comment)")
     public ResponseEntity<CommentResponseDTO> createComment(@Valid @RequestBody CreateCommentRequestDTO request) {
         CommentResponseDTO comment = reviewCommentService.createComment(request);
@@ -143,7 +143,7 @@ public class ReviewCommentController {
     }
 
     @PutMapping("/comments/{commentId}")
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasAnyRole('PLAYER', 'OWNER', 'MANAGER')")
     @Operation(summary = "Update a comment", description = "Update an existing comment (only by author)")
     public ResponseEntity<CommentResponseDTO> updateComment(
             @Parameter(description = "Comment ID") @PathVariable Integer commentId,
@@ -155,7 +155,7 @@ public class ReviewCommentController {
     }
 
     @DeleteMapping("/comments/{commentId}")
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasAnyRole('PLAYER', 'OWNER', 'MANAGER')")
     @Operation(summary = "Delete a comment", description = "Delete a comment (only by author)")
     public ResponseEntity<Void> deleteComment(
             @Parameter(description = "Comment ID") @PathVariable Integer commentId) {
@@ -174,7 +174,7 @@ public class ReviewCommentController {
     }
 
     @PostMapping("/comments/reply")
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasAnyRole('PLAYER', 'OWNER', 'MANAGER')")
     @Operation(summary = "Reply to a comment", description = "Create a reply to an existing comment")
     public ResponseEntity<CommentResponseDTO> replyToComment(@Valid @RequestBody CreateCommentRequestDTO request) {
         // Same as createComment, but parentCommentId should be set
