@@ -108,6 +108,21 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
         Long sumRevenueByOwnerIdAndMonth(@Param("ownerId") Integer ownerId, @Param("month") int month,
                         @Param("year") int year);
 
+        @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.court.location.owner.id = :ownerId " +
+                        "AND b.court.location.id = :locationId AND b.status = 'COMPLETED' AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year")
+        Long sumRevenueByOwnerIdAndLocationIdAndMonth(@Param("ownerId") Integer ownerId, @Param("locationId") Integer locationId, 
+                        @Param("month") int month, @Param("year") int year);
+
+        @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.court.location.owner.id = :ownerId " +
+                        "AND b.court.location.id = :locationId AND b.status = 'COMPLETED' AND YEAR(b.bookingDate) = :year")
+        Long sumRevenueByOwnerIdAndLocationIdAndYear(@Param("ownerId") Integer ownerId, @Param("locationId") Integer locationId, 
+                        @Param("year") int year);
+
+        @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.court.location.owner.id = :ownerId " +
+                        "AND b.court.location.id = :locationId AND b.status = 'COMPLETED' AND b.bookingDate = :date")
+        Long sumRevenueByOwnerIdAndLocationIdAndDate(@Param("ownerId") Integer ownerId, @Param("locationId") Integer locationId, 
+                        @Param("date") LocalDate date);
+
         // Additional queries for public API
         @Query("SELECT DISTINCT b.startHours FROM Booking b WHERE b.court.id = :courtId AND b.bookingDate = :date AND b.status <> 'CANCELED'")
         List<List<Integer>> findStartHoursByCourtAndDate(@Param("courtId") Integer courtId, @Param("date") LocalDate date);

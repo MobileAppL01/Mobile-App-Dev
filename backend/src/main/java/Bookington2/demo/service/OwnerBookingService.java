@@ -2,11 +2,14 @@ package Bookington2.demo.service;
 
 import Bookington2.demo.dto.owner.BookingResponse;
 import Bookington2.demo.dto.owner.RevenueStatisticsResponse;
+import Bookington2.demo.dto.owner.LocationRevenueResponse;
 import Bookington2.demo.entity.Booking;
+import Bookington2.demo.entity.Location;
 import Bookington2.demo.enums.BookingStatus;
 import Bookington2.demo.exception.AppException;
 import Bookington2.demo.exception.ErrorCode;
 import Bookington2.demo.repository.BookingRepository;
+import Bookington2.demo.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class OwnerBookingService {
 
     private final BookingRepository bookingRepository;
+    private final LocationRepository locationRepository;
 
     public List<BookingResponse> getBookings(Integer ownerId, Integer locationId, LocalDate date, BookingStatus status) {
         return bookingRepository.findAllByOwnerWithFilters(ownerId, locationId, date, status)
@@ -102,5 +106,43 @@ public class OwnerBookingService {
                 .bookingDate(booking.getBookingDate())
                 .paymentMethod(booking.getPaymentMethod())
                 .build();
+    }
+
+    public List<LocationRevenueResponse> getRevenueByLocation(Integer ownerId, Integer locationId, Integer month, Integer year, LocalDate date) {
+        List<Location> locations;
+        
+        if (locationId != null) {
+            // Lấy location cụ thể
+            locations = locationRepository.findAllByOwner_Id(ownerId).stream()
+                    .filter(loc -> loc.getId().equals(locationId))
+                    .collect(Collectors.toList());
+        } else {
+            // Lấy tất cả locations của owner
+            locations = locationRepository.findAllByOwner_Id(ownerId);
+        }
+        
+        return locations.stream()
+                .map(location -> {
+                    Long revenue = null;
+                    
+                    if (date != null) {
+                        // Doanh thu theo ngày
+                        revenue = bookingRepository.sumRevenueByOwnerIdAndLocationIdAndDate(ownerId, location.getId(), date);
+                    } else if (month != null && year != null) {
+                        // Doanh thu theo tháng
+                        revenue = bookingRepository.sumRevenueByOwnerIdAndLocationIdAndMonth(ownerId, location.getId(), month, year);
+                    } else if (year != null) {
+                        // Doanh thu theo năm
+                        revenue = bookingRepository.sumRevenueByOwnerIdAndLocationIdAndYear(ownerId, location.getId(), year);
+                    }
+                    
+                    return LocationRevenueResponse.builder()
+                            .locationId(location.getId())
+                            .locationName(location.getName())
+                            .locationAddress(location.getAddress())
+                            .totalRevenue(revenue != null ? revenue : 0L)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }

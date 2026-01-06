@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import Bookington2.demo.dto.ReviewCommentImageDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +42,10 @@ public class ReviewCommentService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ReviewCommentImageService reviewCommentImageService;
+
 
     // ========================================
     // REVIEW METHODS
@@ -163,6 +168,12 @@ public class ReviewCommentService {
         return counts;
     }
 
+
+    private CommentResponseDTO toCommentDTO(ReviewComment comment) {
+        // comment mới tạo thì chưa có ảnh, hoặc bạn có thể load ảnh từ DB ở đây nếu muốn
+        return toCommentDTO(comment, List.of());
+    }
+
     // ========================================
     // COMMENT METHODS
     // ========================================
@@ -201,11 +212,14 @@ public class ReviewCommentService {
     }
 
     public List<CommentResponseDTO> getCommentsByReview(Integer reviewId) {
-        // Get all comments for review
-        List<ReviewComment> allComments = reviewCommentRepository.findByReviewIdOrderByCreatedAtAsc(reviewId);
+        List<ReviewComment> allComments =
+                reviewCommentRepository.findByReviewIdOrderByCreatedAtAsc(reviewId);
 
-        // Build tree structure
-        return buildCommentTree(allComments);
+        List<Integer> commentIds = allComments.stream().map(ReviewComment::getId).toList();
+        Map<Integer, List<ReviewCommentImageDTO>> imagesByCommentId =
+                commentIds.isEmpty() ? Map.of() : reviewCommentImageService.getImagesForComments(commentIds);
+
+        return buildCommentTree(allComments, imagesByCommentId);
     }
 
     @Transactional
@@ -260,9 +274,27 @@ public class ReviewCommentService {
     }
 
     private ReviewDTO toReviewDTO(Review review) {
-        // Get comments as tree
-        List<ReviewComment> allComments = reviewCommentRepository.findByReviewIdOrderByCreatedAtAsc(review.getId());
-        List<CommentResponseDTO> commentTree = buildCommentTree(allComments);
+        // Get comments
+        List<ReviewComment> allComments =
+                reviewCommentRepository.findByReviewIdOrderByCreatedAtAsc(review.getId());
+
+        // ✅ Batch load images for all commentIds
+        List<Integer> commentIds = allComments.stream()
+                .map(ReviewComment::getId)
+                .toList();
+
+        Map<Integer, List<ReviewCommentImageDTO>> imagesByCommentId =
+                commentIds.isEmpty()
+                        ? Map.of()
+                        : reviewCommentImageService.getImagesForComments(commentIds);
+
+        // Build tree with images
+        List<CommentResponseDTO> commentTree = buildCommentTree(allComments, imagesByCommentId);
+
+        // ✅ Gallery images of this review (flatten)
+        List<ReviewCommentImageDTO> reviewImages = imagesByCommentId.values().stream()
+                .flatMap(List::stream)
+                .toList();
 
         return ReviewDTO.builder()
                 .id(review.getId())
@@ -275,10 +307,15 @@ public class ReviewCommentService {
                 .content(review.getContent())
                 .createdAt(review.getCreatedAt())
                 .comments(commentTree)
+                .images(reviewImages)
                 .build();
     }
 
-    private CommentResponseDTO toCommentDTO(ReviewComment comment) {
+
+    private CommentResponseDTO toCommentDTO(
+            ReviewComment comment,
+            List<ReviewCommentImageDTO> images
+    ) {
         return CommentResponseDTO.builder()
                 .id(comment.getId())
                 .reviewId(comment.getReview().getId())
@@ -289,36 +326,40 @@ public class ReviewCommentService {
                 .createdAt(comment.getCreatedAt())
                 .parentCommentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null)
                 .replies(new ArrayList<>())
+                .images(images != null ? images : List.of()) // ✅ NEW
                 .build();
     }
 
-    private List<CommentResponseDTO> buildCommentTree(List<ReviewComment> allComments) {
-        // Map to store nodes by ID
+
+    private List<CommentResponseDTO> buildCommentTree(
+            List<ReviewComment> allComments,
+            Map<Integer, List<ReviewCommentImageDTO>> imagesByCommentId
+    ) {
         Map<Integer, CommentResponseDTO> nodeMap = new HashMap<>();
         List<CommentResponseDTO> rootComments = new ArrayList<>();
 
-        // Create all nodes
+        // Create nodes
         for (ReviewComment comment : allComments) {
-            CommentResponseDTO dto = toCommentDTO(comment);
+            List<ReviewCommentImageDTO> imgs =
+                    imagesByCommentId.getOrDefault(comment.getId(), List.of());
+
+            CommentResponseDTO dto = toCommentDTO(comment, imgs);
             nodeMap.put(comment.getId(), dto);
         }
 
-        // Build tree structure
+        // Link tree
         for (ReviewComment comment : allComments) {
             CommentResponseDTO dto = nodeMap.get(comment.getId());
 
             if (comment.getParentComment() == null) {
-                // Root comment
                 rootComments.add(dto);
             } else {
-                // Reply - add to parent's replies
                 CommentResponseDTO parentDto = nodeMap.get(comment.getParentComment().getId());
-                if (parentDto != null) {
-                    parentDto.getReplies().add(dto);
-                }
+                if (parentDto != null) parentDto.getReplies().add(dto);
             }
         }
 
         return rootComments;
     }
+
 }
