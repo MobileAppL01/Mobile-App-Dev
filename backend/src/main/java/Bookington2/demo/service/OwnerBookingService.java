@@ -21,7 +21,8 @@ public class OwnerBookingService {
 
     private final BookingRepository bookingRepository;
 
-    public List<BookingResponse> getBookings(Integer ownerId, Integer locationId, LocalDate date, BookingStatus status) {
+    public List<BookingResponse> getBookings(Integer ownerId, Integer locationId, LocalDate date,
+            BookingStatus status) {
         return bookingRepository.findAllByOwnerWithFilters(ownerId, locationId, date, status)
                 .stream()
                 .map(this::toBookingResponse)
@@ -49,9 +50,12 @@ public class OwnerBookingService {
 
     public RevenueStatisticsResponse getRevenueStatistics(Integer ownerId, int month, int year) {
         Long totalBookings = bookingRepository.countByOwnerIdAndMonth(ownerId, month, year);
-        Long canceledBookings = bookingRepository.countByOwnerIdAndStatusAndMonth(ownerId, BookingStatus.CANCELED, month, year);
-        Long completedBookings = bookingRepository.countByOwnerIdAndStatusAndMonth(ownerId, BookingStatus.COMPLETED, month, year);
-        Long pendingBookings = bookingRepository.countByOwnerIdAndStatusAndMonth(ownerId, BookingStatus.PENDING, month, year);
+        Long canceledBookings = bookingRepository.countByOwnerIdAndStatusAndMonth(ownerId, BookingStatus.CANCELED,
+                month, year);
+        Long completedBookings = bookingRepository.countByOwnerIdAndStatusAndMonth(ownerId, BookingStatus.COMPLETED,
+                month, year);
+        Long pendingBookings = bookingRepository.countByOwnerIdAndStatusAndMonth(ownerId, BookingStatus.PENDING, month,
+                year);
         Long totalRevenue = bookingRepository.sumRevenueByOwnerIdAndMonth(ownerId, month, year);
 
         return RevenueStatisticsResponse.builder()
@@ -84,7 +88,7 @@ public class OwnerBookingService {
 
     private BookingResponse toBookingResponse(Booking booking) {
         String playerName = booking.getPlayer() != null
-                ? booking.getPlayer().getFirstName() + " " + booking.getPlayer().getLastName()
+                ? booking.getPlayer().getFullName()
                 : "N/A";
         String playerPhone = booking.getPlayer() != null ? booking.getPlayer().getPhone() : "N/A";
 

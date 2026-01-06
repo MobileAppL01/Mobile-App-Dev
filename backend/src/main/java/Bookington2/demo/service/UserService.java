@@ -41,7 +41,7 @@ public class UserService {
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -59,10 +59,15 @@ public class UserService {
                 .phone(userDetails.getPhone())
                 .build();
 
+        System.out.println("DEBUG LOGIN: Email=" + userDetails.getEmail() + ", FullName=" + userDetails.getFullName()
+                + ", Phone=" + userDetails.getPhone());
+
         return ResponseEntity.ok(signInResponseDto);
     }
 
     public User createUser(UserCreationRequest request, String Role) {
+        System.out.println("DEBUG CREATE USER: Email=" + request.getEmail() + ", FullName=" + request.getFullName()
+                + ", Phone=" + request.getPhone());
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AppException(ErrorCode.USER_EXITSED);
         }
@@ -96,8 +101,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
-        user.setLastName(request.getLastName());
-        user.setFirstName(request.getFirstName());
+        user.setFullName(request.getFullName());
         if (Role.equals("PLAYER")) {
             user.setRole(UserRole.PLAYER);
         } else {

@@ -16,21 +16,21 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/booking")
+@RequestMapping("/api/v1/booking")
 public class BookingController {
     @Autowired
     BookingService bookingService;
+
     @GetMapping(path = "/bookingHistory")
     @PreAuthorize("hasRole('PLAYER')")
     public List<BookingDTO> getBookingHistory(@RequestParam Integer user) {
-            return bookingService.getBookingHistory(user);
+        return bookingService.getBookingHistory(user);
     }
-
 
     @PreAuthorize("hasAnyRole('PLAYER','ONWER')")
     @GetMapping(path = "/available")
     public List<Integer> getAvailableTimeSlotOfCourtAtDate(@RequestParam LocalDate date, @RequestParam Integer court) {
-        return bookingService.getAvailableTimeSlotsOfCourtAtDate(court,date);
+        return bookingService.getAvailableTimeSlotsOfCourtAtDate(court, date);
     }
 
 }

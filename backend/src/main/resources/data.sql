@@ -9,13 +9,13 @@ CREATE EXTENSION IF NOT EXISTS unaccent;
 -- ==========================================
 -- 2. Insert Users
 -- ==========================================
-INSERT INTO t_user (id, password, first_name, last_name, email, phone, role)
+INSERT INTO t_user (id, password, full_name, email, phone, role)
 VALUES
-    ('1', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Super', 'Admin', 'admin@test.com', '0901111111','ADMIN'),
-    ('2', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'John', 'Owner', 'owner@test.com', '0902222222', 'OWNER'),
-    ('3', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Jane', 'Owner2', 'owner2@test.com', '0902222223', 'OWNER'),
-    ('4', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Alice', 'Player', 'alice@test.com', '0903333333', 'PLAYER'),
-    ('5', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Bob', 'Player2', 'bob@test.com', '0903333334', 'PLAYER')
+    ('1', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Super Admin', 'admin@test.com', '0901111111','ADMIN'),
+    ('2', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'John Owner', 'owner@test.com', '0902222222', 'OWNER'),
+    ('3', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Jane Owner2', 'owner2@test.com', '0902222223', 'OWNER'),
+    ('4', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Alice Player', 'alice@test.com', '0903333333', 'PLAYER'),
+    ('5', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Bob Player2', 'bob@test.com', '0903333334', 'PLAYER')
 ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================
@@ -26,7 +26,9 @@ VALUES
     (1, 'Victory Badminton Club', '123 Sport St, District 1, HCM', 'Sân cầu lông cao cấp, điều hòa mát lạnh', 'https://example.com/victory.jpg', 4.5, 50000, '07:00:00', '22:00:00', 'OPEN', '2'),
     (2, 'Sân cầu lông Huy Thắng', 'Khu 12, xã Long Đức, huyện Long Thành, tỉnh Đồng Nai', 'Sân rộng rãi, giá rẻ', 'https://example.com/huythang.jpg', 4.2, 40000, '08:00:00', '23:00:00', 'OPEN', '2'),
     (3, 'Sân cầu lông Hưng Sport', 'Khu 15, xã Long Đức, huyện Long Thành, tỉnh Đồng Nai', 'Sân mới xây, thiết bị hiện đại', 'https://example.com/hungsport.jpg', 4.8, 60000, '06:00:00', '22:00:00', 'OPEN', '2'),
-    (4, 'Champion Badminton Center', '456 Victory Rd, District 7, HCM', 'Sân chuyên nghiệp cho thi đấu', 'https://example.com/champion.jpg', 4.7, 70000, '06:00:00', '23:00:00', 'OPEN', '3')
+    (4, 'Champion Badminton Center', '456 Victory Rd, District 7, HCM', 'Sân chuyên nghiệp cho thi đấu', 'https://example.com/champion.jpg', 4.7, 70000, '06:00:00', '23:00:00', 'OPEN', '3'),
+    (5, 'Sân Cầu Lông Lan Anh', '789 CMT8, District 10, HCM', 'Sân thoáng mát, giá bình dân', 'https://example.com/lananh.jpg', 4.3, 45000, '06:00:00', '23:00:00', 'OPEN', '2'),
+    (6, 'Sân Cầu Lông 19/5', '19/5 Street, Thu Duc, HCM', 'Sân rộng, nhiều tiện ích, bãi xe rộng', 'https://example.com/195.jpg', 4.6, 55000, '05:30:00', '22:30:00', 'OPEN', '3')
 ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================
@@ -43,7 +45,11 @@ VALUES
     (7, 'Court 2', 'ACTIVE', false, 3),
     (8, 'Court 3', 'ACTIVE', false, 3),
     (9, 'Pro Court 1', 'ACTIVE', false, 4),
-    (10, 'Pro Court 2', 'ACTIVE', false, 4)
+    (10, 'Pro Court 2', 'ACTIVE', false, 4),
+    (11, 'Sân Lan Anh 1', 'ACTIVE', false, 5),
+    (12, 'Sân Lan Anh 2', 'ACTIVE', false, 5),
+    (13, 'Sân 19/5 A', 'ACTIVE', false, 6),
+    (14, 'Sân 19/5 B', 'ACTIVE', false, 6)
 ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================
@@ -71,7 +77,26 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================
--- 7. Reset Sequences (QUAN TRỌNG)
+-- 7. Insert Reviews & Comments
+-- ==========================================
+INSERT INTO review (id, user_id, location_id, rating, content, created_at)
+VALUES
+    (1, 4, 1, 5, 'Sân rất đẹp, nhân viên thân thiện.', '2025-12-01 10:00:00'),
+    (2, 5, 1, 4, 'Sân hơi trơn một chút nhưng tổng thể ok.', '2025-12-02 11:00:00'),
+    (3, 4, 2, 3, 'Giá rẻ nhưng không gian hơi nóng.', '2025-12-03 14:00:00'),
+    (4, 5, 5, 5, 'Sân mới, đánh rất sướng.', '2025-12-05 09:00:00')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO review_comment (id, review_id, user_id, parent_comment_id, content, created_at)
+VALUES
+    (1, 1, 2, NULL, 'Cảm ơn bạn đã ủng hộ sân!', '2025-12-01 10:30:00'),
+    (2, 1, 4, 1, 'Dạ vâng ạ ^^', '2025-12-01 10:45:00'),
+    (3, 2, 2, NULL, 'Cảm ơn bạn góp ý, bên mình sẽ khắc phục sớm.', '2025-12-02 12:00:00'),
+    (4, 3, 4, NULL, 'Hy vọng lắp thêm quạt.', '2025-12-03 14:30:00')
+ON CONFLICT (id) DO NOTHING;
+
+-- ==========================================
+-- 8. Reset Sequences
 -- ==========================================
 -- Cập nhật bộ đếm ID tự động (Auto Increment) để khớp với dữ liệu vừa chèn thủ công.
 -- Nếu không có bước này, khi tạo mới booking bằng API sẽ bị lỗi "Duplicate Key ID" vì nó đếm lại từ 1.
@@ -80,3 +105,5 @@ SELECT setval('location_id_seq', (SELECT MAX(id) FROM location));
 SELECT setval('court_id_seq', (SELECT MAX(id) FROM court));
 SELECT setval('booking_id_seq', (SELECT MAX(id) FROM booking));
 SELECT setval('promotion_id_seq', (SELECT MAX(id) FROM promotion));
+SELECT setval('review_id_seq', (SELECT COALESCE(MAX(id), 1) FROM review));
+SELECT setval('review_comment_id_seq', (SELECT COALESCE(MAX(id), 1) FROM review_comment));
