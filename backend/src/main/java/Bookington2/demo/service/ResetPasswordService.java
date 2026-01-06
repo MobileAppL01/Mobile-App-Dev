@@ -25,24 +25,29 @@ public class ResetPasswordService {
         this.mailSender = mailSender;
     }
 
-    public void resetPassword(Integer userId, String password) {
+    public ResponseEntity<String> resetPassword(Integer userId, String oldPassword, String newPassword) {
         User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            user.setPassword(passwordEncoder.encode(password));
+        if (user != null && passwordEncoder.matches(oldPassword, user.getPassword())) {
+
+            user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
+            return ResponseEntity.ok("Đổi mật khẩu thành công");
+        }
+        else {
+            return ResponseEntity.badRequest().body("Thông tin không hợp lệ");
         }
     }
-    public ResponseEntity<String> resetForgotPassword(String email) {
+    public ResponseEntity<String> resetForgotPassword(String email, String phoneNumber) {
         User user = userRepository.findByEmail(email);
-        if (user != null) {
+        if (user != null&&user.getPhone().equals(phoneNumber)) {
             String newPassword = UUID.randomUUID().toString();
-            user.setPassword(passwordEncoder.encode(passwordEncoder.encode(newPassword)));
+            user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             sendEmail(user.getEmail(), newPassword);
             return ResponseEntity.ok("Mật khẩu mới đã được gửi tới email của bạn");
         }
         else {
-            return ResponseEntity.badRequest().body("Email không hợp lệ");
+            return ResponseEntity.badRequest().body("Thông tin không hợp lệ");
         }
 
 
