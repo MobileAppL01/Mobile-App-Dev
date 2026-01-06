@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth", "/api/v1/register/owners", "/api/v1/register/players",
                                 "/api/v1/location/**", "/api/v1/court/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/v3/api-docs/**", "/webjars/**",
-                                "/api-docs/**", "/swagger-resources/**")
+                                "/api-docs/**", "/swagger-resources/**","/api/v1/reset-password")
                         .permitAll()
                         .anyRequest().authenticated());
 
