@@ -2,11 +2,11 @@ spring:
   application:
     name: demo
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+      url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mobile}
+      username: ${SPRING_DATASOURCE_USERNAME:postgres}
+      password: ${SPRING_DATASOURCE_PASSWORD:lengocnhuy1311N@}
+      driver-class-name: org.postgresql.Driver
 
-    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -68,7 +68,7 @@ payment:
 
 # Cloudinary configuration
 cloudinary:
-  cloud_name: ${CLOUDINARY_CLOUD_NAME:mediaflows_1d2293bc-4184-499c-811e-13058e03f611}
+  cloud_name: ${CLOUDINARY_CLOUD_NAME:dkgggrdmf}
   api_key: ${CLOUDINARY_API_KEY:111958593566962}
   api_secret: ${CLOUDINARY_API_SECRET:4fIPnYcF_wBkrVxG7r9WJiJ7Egg}
 

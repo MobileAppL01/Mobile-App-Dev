@@ -13,22 +13,36 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class ForgotPasswordController {
     private final ResetPasswordService resetPasswordService;
+
     private Integer getCurrentUserId() {
-        Authentication auth =
-                SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         return ((UserDetailsImpl) auth.getPrincipal()).getId();
     }
+
     public ForgotPasswordController(ResetPasswordService resetPasswordService) {
         this.resetPasswordService = resetPasswordService;
     }
 
-    @PostMapping("/reset-password")
-    ResponseEntity<String> resetPassword(ResetPasswordRequest resetPasswordRequest) {
-        return resetPasswordService.resetForgotPassword(resetPasswordRequest.getEmail(), resetPasswordRequest.getPhoneNumber());
+    @PostMapping("/auth/forgot-password/send-otp")
+    ResponseEntity<String> sendOtp(@RequestBody ResetPasswordRequest request) {
+        return resetPasswordService.sendForgotPasswordOtp(request.getEmail());
     }
+
+    @PostMapping("/auth/forgot-password/verify-otp")
+    ResponseEntity<String> verifyOtp(@RequestBody ResetPasswordRequest request) {
+        return resetPasswordService.verifyOtp(request.getEmail(), request.getOtp());
+    }
+
+    @PostMapping("/auth/reset-password-otp")
+    ResponseEntity<String> resetPasswordWithOtp(@RequestBody ResetPasswordRequest request) {
+        return resetPasswordService.resetPasswordWithOtp(request.getEmail(), request.getOtp(),
+                request.getNewPassword());
+    }
+
     @PostMapping("/change-password")
-    ResponseEntity<String> changePassword(ChangePasswordRequest changePasswordRequest) {
-        return resetPasswordService.resetPassword(getCurrentUserId(),changePasswordRequest.getOldPassword(),changePasswordRequest.getNewPassword());
+    ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        return resetPasswordService.resetPassword(getCurrentUserId(), changePasswordRequest.getOldPassword(),
+                changePasswordRequest.getNewPassword());
     }
 }

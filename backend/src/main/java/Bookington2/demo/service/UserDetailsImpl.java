@@ -27,6 +27,7 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
     private String fullName;
     private String phone;
+    private String roles;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
@@ -40,6 +41,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getEmail(),
                 user.getFullName(),
                 user.getPhone(),
+                user.getRole().toString(),
                 authorities);
     }
 

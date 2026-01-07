@@ -11,6 +11,7 @@ import Bookington2.demo.repository.PromotionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import Bookington2.demo.service.NotificationService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ public class OwnerPromotionService {
 
     private final PromotionRepository promotionRepository;
     private final LocationRepository locationRepository;
+    private final Bookington2.demo.repository.NotificationRepository notificationRepository;
 
     public List<PromotionResponse> getMyPromotions(Integer ownerId, Integer locationId) {
         List<Promotion> promotions;
@@ -69,6 +71,27 @@ public class OwnerPromotionService {
                 .build();
 
         promotion = promotionRepository.save(promotion);
+
+        // Create notification
+        // Create notification explicitly for Owner
+        try {
+            Bookington2.demo.entity.Notification notification = new Bookington2.demo.entity.Notification();
+            notification.setType(Bookington2.demo.enums.NotificationType.PROMOTION);
+            notification.setUser(location.getOwner()); // Link to Owner
+            notification.setBriefMessage("Mã khuyến mãi " + promotion.getCode() + " đã được tạo");
+            notification.setPromotionMessage("Bạn đã tạo thành công mã khuyến mãi " + promotion.getCode() +
+                    " cho cơ sở " + location.getName());
+            notification.setStartDate(promotion.getStartDate());
+            notification.setEndDate(promotion.getEndDate());
+            notification.setCreatedAt(java.time.LocalDateTime.now());
+            notification.setChecked(false);
+
+            notificationRepository.save(notification);
+        } catch (Exception e) {
+            System.out.println("Error creating notification: " + e.getMessage());
+            e.printStackTrace();
+        }
+
         return toPromotionResponse(promotion);
     }
 
@@ -105,4 +128,3 @@ public class OwnerPromotionService {
                 .build();
     }
 }
-
