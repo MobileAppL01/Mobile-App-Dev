@@ -100,20 +100,64 @@ public class ResetPasswordService {
 
     private void sendEmail(String to, String content, boolean isOtp) {
         try {
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(to);
+            jakarta.mail.internet.MimeMessage mimeMessage = mailSender.createMimeMessage();
+            org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
+                    mimeMessage, "utf-8");
+
+            helper.setTo(to);
+
+            String htmlContent;
+
             if (isOtp) {
-                mailMessage.setSubject("Mã xác thực OTP - Bookington");
-                mailMessage.setText("Mã xác thực của bạn là: " + content + "\nMã có hiệu lực trong 5 phút.");
+                helper.setSubject("Mã xác thực OTP - Bookington");
+                htmlContent = "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #ffffff;\">"
+                        +
+                        "<div style=\"text-align: center; margin-bottom: 20px;\">" +
+                        "<h2 style=\"color: #4F46E5; margin: 0;\">Bookington</h2>" +
+                        "</div>" +
+                        "<p style=\"font-size: 16px; color: #333;\">Xin chào,</p>" +
+                        "<p style=\"font-size: 16px; color: #333;\">Mã xác thực (OTP) của bạn là:</p>" +
+                        "<div style=\"text-align: center; margin: 30px 0;\">" +
+                        "<span style=\"font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #4F46E5; background-color: #EEF2FF; padding: 15px 30px; border-radius: 8px; border: 1px solid #C7D2FE;\">"
+                        +
+                        content +
+                        "</span>" +
+                        "</div>" +
+                        "<p style=\"font-size: 14px; color: #666;\">Mã này có hiệu lực trong vòng 5 phút. Vui lòng không chia sẻ mã này với bất kỳ ai.</p>"
+                        +
+                        "<hr style=\"border: none; border-top: 1px solid #eee; margin: 20px 0;\" />" +
+                        "<p style=\"font-size: 12px; color: #999; text-align: center;\">© 2024 Bookington. All rights reserved.</p>"
+                        +
+                        "</div>";
             } else {
-                mailMessage.setSubject("Reset mật khẩu thành công");
-                mailMessage.setText(
-                        "Mật khẩu mới của bạn là:\n" + content + "\n" + "Hãy đổi mật khẩu ngay sau khi đăng nhập");
+                helper.setSubject("Reset mật khẩu thành công");
+                htmlContent = "<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #ffffff;\">"
+                        +
+                        "<div style=\"text-align: center; margin-bottom: 20px;\">" +
+                        "<h2 style=\"color: #4F46E5; margin: 0;\">Bookington</h2>" +
+                        "</div>" +
+                        "<p style=\"font-size: 16px; color: #333;\">Xin chào,</p>" +
+                        "<p style=\"font-size: 16px; color: #333;\">Mật khẩu của bạn đã được đặt lại thành công.</p>" +
+                        "<p style=\"font-size: 16px; color: #333;\">Mật khẩu mới của bạn là:</p>" +
+                        "<div style=\"text-align: center; margin: 30px 0;\">" +
+                        "<span style=\"font-size: 24px; font-weight: bold; color: #10B981; background-color: #ECFDF5; padding: 15px 30px; border-radius: 8px; border: 1px solid #D1FAE5;\">"
+                        +
+                        content +
+                        "</span>" +
+                        "</div>" +
+                        "<p style=\"font-size: 14px; color: #666;\">Vui lòng đăng nhập và đổi mật khẩu ngay để đảm bảo an toàn.</p>"
+                        +
+                        "<hr style=\"border: none; border-top: 1px solid #eee; margin: 20px 0;\" />" +
+                        "<p style=\"font-size: 12px; color: #999; text-align: center;\">© 2024 Bookington. All rights reserved.</p>"
+                        +
+                        "</div>";
             }
-            mailSender.send(mailMessage);
+
+            helper.setText(htmlContent, true); // true = isHtml
+            mailSender.send(mimeMessage);
         } catch (Exception e) {
             log.error("MAIL ERROR", e);
-            throw e;
+            throw new RuntimeException("Error sending email", e);
         }
 
     }
