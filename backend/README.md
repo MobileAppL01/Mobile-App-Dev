@@ -1,30 +1,40 @@
-# Bookington Backend
+# Bookinton Backend API
 
-This is the backend service for the Bookington application, built with Java Spring Boot.
+This is the backend server for the Bookinton application, developed using **Java Spring Boot**.
 
-## Prerequisites
+## 🛠 Prerequisites
 
-- Java 21
-- Maven (or use the provided `mvnw` wrapper)
-- PostgreSQL (ensure database is running and configured in `application.yaml`)
+-   **Java 21** (JDK 21)
+-   **Maven** (or use the included `mvnw`)
+-   **PostgreSQL** Database
 
-## Setup & Run
+## 🚀 Getting Started
 
-1.  Navigate to the `backend` directory:
-    ```bash
-    cd backend
-    ```
+### 1. Database Configuration
+Ensure your PostgreSQL database is running. Update the connection details in `src/main/resources/application.yaml` if necessary.
 
-2.  Configure database connection in `src/main/resources/application.yaml`.
+**Note:** The system uses `src/main/resources/data.sql` to initialize sample data (Roles, Users, Courts, Bookings) on startup.
 
-3.  Run the application:
+### 2. Run the Application
+
+Open your terminal in this directory (where `pom.xml` serves as the root).
+
+**Using Maven Wrapper:**
+
+*   **Linux/macOS:**
     ```bash
     ./mvnw spring-boot:run
     ```
-    (On Windows PowerShell):
+*   **Windows (Command Prompt/PowerShell):**
     ```powershell
     .\mvnw spring-boot:run
     ```
 
-4.  The server will start on port 8080 (default).
-    API Documentation (Swagger) will be available at: http://localhost:8080/swagger-ui.html
+### 3. API Documentation
+Once the server is running, you can access the Swagger UI documentation at:
+👉 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+## 📂 Project Structure
+
+*   `src/main/java`: Source code
+*   `src/main/resources`: Configuration files and SQL scripts (`data.sql`)
