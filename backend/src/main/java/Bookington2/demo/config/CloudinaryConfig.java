@@ -13,13 +13,11 @@ public class CloudinaryConfig {
     public Cloudinary cloudinary(
             @Value("${cloudinary.cloud_name}") String cloudName,
             @Value("${cloudinary.api_key}") String apiKey,
-            @Value("${cloudinary.api_secret}") String apiSecret
-    ) {
+            @Value("${cloudinary.api_secret}") String apiSecret) {
         return new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", cloudName,
                 "api_key", apiKey,
                 "api_secret", apiSecret,
-                "secure", true
-        ));
+                "secure", true));
     }
 }
