@@ -2,8 +2,10 @@ spring:
   application:
     name: demo
   datasource:
-
-     driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    driver-class-name: org.postgresql.Driver
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    username: ${SPRING_DATASOURCE_USERNAME}
   jpa:
     hibernate:
       ddl-auto: update
