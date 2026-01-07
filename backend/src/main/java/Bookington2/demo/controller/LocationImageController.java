@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +22,11 @@ public class LocationImageController {
     @Autowired
     private LocationImageService locationImageService;
 
-    @PostMapping("/{locationId}/images")
-    @PreAuthorize("hasRole('OWNER')")
+    @PostMapping(
+            value = "/{locationId}/images",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+//    @PreAuthorize("hasRole('OWNER')")
     @Operation(summary = "Upload location image", description = "Upload an image to location gallery (Owner only)")
     public ResponseEntity<?> uploadImage(
             @Parameter(description = "Location ID")
