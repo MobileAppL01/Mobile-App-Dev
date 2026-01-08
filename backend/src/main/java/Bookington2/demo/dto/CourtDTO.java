@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class CourtDTO {
     private Integer id;
     private String name;
+    private String status;
 }
