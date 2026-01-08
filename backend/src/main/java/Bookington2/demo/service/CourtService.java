@@ -13,11 +13,11 @@ public class CourtService {
     @Autowired
     private CourtRepository courtRepository;
 
-    public List<CourtDTO> getListCourtByLocationId(Integer locationId){
+    public List<CourtDTO> getListCourtByLocationId(Integer locationId) {
         return courtRepository.findAllByLocation_Id(locationId).stream().map(this::toCourtDTO).toList();
     }
 
-    private CourtDTO toCourtDTO(Court court){
-        return new CourtDTO(court.getId(),court.getName());
+    private CourtDTO toCourtDTO(Court court) {
+        return new CourtDTO(court.getId(), court.getName(), court.getStatus().name());
     }
 }
