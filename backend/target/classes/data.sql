@@ -15,7 +15,9 @@ VALUES
     ('2', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'John Owner', 'owner@test.com', '0902222222', 'OWNER'),
     ('3', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Jane Owner2', 'owner2@test.com', '0902222223', 'OWNER'),
     ('4', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Alice Player', 'alice@test.com', '0903333333', 'PLAYER'),
-    ('5', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Bob Player2', 'bob@test.com', '0903333334', 'PLAYER')
+    ('5', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Bob Player2', 'bob@test.com', '0903333334', 'PLAYER'),
+    ('6', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'Charlie Owner3', 'owner3@test.com', '0904444444', 'OWNER'),
+    ('7', '$2a$10$ZMVBA1/J88dw3XxJvsZa8.JlFjCQpIF6kwZHscH9k5G24K1omFN.a', 'David Owner4', 'owner4@test.com', '0905555555', 'OWNER')
 ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================
@@ -23,12 +25,16 @@ ON CONFLICT (id) DO NOTHING;
 -- ==========================================
 INSERT INTO location (id, name, address, description, image, rating, price_per_hour, open_time, close_time, status, owner_id)
 VALUES
-    (1, 'Victory Badminton Club', '123 Sport St, District 1, HCM', 'Sân cầu lông cao cấp, điều hòa mát lạnh', 'https://example.com/victory.jpg', 4.5, 50000, '07:00:00', '22:00:00', 'OPEN', '2'),
-    (2, 'Sân cầu lông Huy Thắng', 'Khu 12, xã Long Đức, huyện Long Thành, tỉnh Đồng Nai', 'Sân rộng rãi, giá rẻ', 'https://example.com/huythang.jpg', 4.2, 40000, '08:00:00', '23:00:00', 'OPEN', '2'),
-    (3, 'Sân cầu lông Hưng Sport', 'Khu 15, xã Long Đức, huyện Long Thành, tỉnh Đồng Nai', 'Sân mới xây, thiết bị hiện đại', 'https://example.com/hungsport.jpg', 4.8, 60000, '06:00:00', '22:00:00', 'OPEN', '2'),
-    (4, 'Champion Badminton Center', '456 Victory Rd, District 7, HCM', 'Sân chuyên nghiệp cho thi đấu', 'https://example.com/champion.jpg', 4.7, 70000, '06:00:00', '23:00:00', 'OPEN', '3'),
-    (5, 'Sân Cầu Lông Lan Anh', '789 CMT8, District 10, HCM', 'Sân thoáng mát, giá bình dân', 'https://example.com/lananh.jpg', 4.3, 45000, '06:00:00', '23:00:00', 'OPEN', '2'),
-    (6, 'Sân Cầu Lông 19/5', '19/5 Street, Thu Duc, HCM', 'Sân rộng, nhiều tiện ích, bãi xe rộng', 'https://example.com/195.jpg', 4.6, 55000, '05:30:00', '22:30:00', 'OPEN', '3')
+    (1, 'Victory Badminton Club', '123 Sport St, Quận 1, Thành phố Hồ Chí Minh', 'Sân cầu lông cao cấp, điều hòa mát lạnh, ngay trung tâm Quận 1.', 'https://example.com/victory.jpg', 4.5, 50000, '07:00:00', '22:00:00', 'OPEN', '2'),
+    (2, 'Sân cầu lông Huy Thắng', 'Khu 12, xã Long Đức, Huyện Long Thành, Tỉnh Đồng Nai', 'Sân rộng rãi, thoáng mát, chỗ để xe rộng rãi.', 'https://example.com/huythang.jpg', 4.2, 40000, '08:00:00', '23:00:00', 'OPEN', '2'),
+    (3, 'Sân cầu lông Hưng Sport', 'QL51, Thị trấn Long Thành, Huyện Long Thành, Tỉnh Đồng Nai', 'Sân mới xây, sàn thảm đạt chuẩn thi đấu.', 'https://example.com/hungsport.jpg', 4.8, 60000, '06:00:00', '22:00:00', 'OPEN', '2'),
+    (4, 'Champion Badminton Center', '456 Victory Rd, Quận 7, Thành phố Hồ Chí Minh', 'Sân chuyên nghiệp cho thi đấu giải, ánh sáng tốt.', 'https://example.com/champion.jpg', 4.7, 70000, '06:00:00', '23:00:00', 'OPEN', '3'),
+    (5, 'Sân Cầu Lông Lan Anh', '789 CMT8, Quận 10, Thành phố Hồ Chí Minh', 'Sân thoáng mát, giá bình dân, phù hợp sinh viên.', 'https://example.com/lananh.jpg', 4.3, 45000, '06:00:00', '23:00:00', 'OPEN', '2'),
+    (6, 'Sân Cầu Lông 19/5', '19/5 Street, Thành phố Thủ Đức, Thành phố Hồ Chí Minh', 'Sân rộng, nhiều tiện ích, bãi xe rộng, có căn tin.', 'https://example.com/195.jpg', 4.6, 55000, '05:30:00', '22:30:00', 'OPEN', '3'),
+    (7, 'Hanoi Smash Club', '123 Xuân Thủy, Quận Cầu Giấy, Thành phố Hà Nội', 'Câu lạc bộ cầu lông hàng đầu Cầu Giấy.', 'https://example.com/hanoi.jpg', 4.9, 80000, '06:00:00', '22:00:00', 'OPEN', '6'),
+    (8, 'Da Nang Badminton', '456 Lê Duẩn, Quận Hải Châu, Thành phố Đà Nẵng', 'Sân cầu lông hiện đại giữa lòng Đà Nẵng.', 'https://example.com/danang.jpg', 4.5, 60000, '05:00:00', '21:00:00', 'OPEN', '7'),
+    (9, 'Aeon Binh Duong Court', 'Đại Lộ Bình Dương, Thành phố Thuận An, Tỉnh Bình Dương', 'Sân cầu lông gần Aeon Mall, tiện lợi mua sắm.', 'https://example.com/binhduong.jpg', 4.4, 45000, '07:00:00', '23:00:00', 'OPEN', '6'),
+    (10, 'Sân Cầu Lông BK', '268 Lý Thường Kiệt, Quận 10, Thành phố Hồ Chí Minh', 'Sân trong khuôn viên ĐHBK, rất đông vui.', 'https://example.com/bk.jpg', 4.2, 40000, '06:00:00', '21:00:00', 'OPEN', '3')
 ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================
@@ -49,7 +55,13 @@ VALUES
     (11, 'Sân Lan Anh 1', 'ACTIVE', false, 5),
     (12, 'Sân Lan Anh 2', 'ACTIVE', false, 5),
     (13, 'Sân 19/5 A', 'ACTIVE', false, 6),
-    (14, 'Sân 19/5 B', 'ACTIVE', false, 6)
+    (14, 'Sân 19/5 B', 'ACTIVE', false, 6),
+    (15, 'Sân HN 1', 'ACTIVE', false, 7),
+    (16, 'Sân HN 2', 'ACTIVE', false, 7),
+    (17, 'Sân DN 1', 'ACTIVE', false, 8),
+    (18, 'Sân BD 1', 'ACTIVE', false, 9),
+    (19, 'Sân BK 1', 'ACTIVE', false, 10),
+    (20, 'Sân BK 2', 'ACTIVE', false, 10)
 ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================

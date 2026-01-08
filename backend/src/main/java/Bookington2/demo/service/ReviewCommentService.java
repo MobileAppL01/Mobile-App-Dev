@@ -4,14 +4,8 @@ import Bookington2.demo.dto.CommentResponseDTO;
 import Bookington2.demo.dto.ReviewDTO;
 import Bookington2.demo.dto.request.CreateCommentRequestDTO;
 import Bookington2.demo.dto.request.CreateReviewRequestDTO;
-import Bookington2.demo.entity.Location;
-import Bookington2.demo.entity.Review;
-import Bookington2.demo.entity.ReviewComment;
-import Bookington2.demo.entity.User;
-import Bookington2.demo.repository.LocationRepository;
-import Bookington2.demo.repository.ReviewRepository;
-import Bookington2.demo.repository.ReviewCommentRepository;
-import Bookington2.demo.repository.UserRepository;
+import Bookington2.demo.entity.*;
+import Bookington2.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import Bookington2.demo.dto.ReviewCommentImageDTO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +26,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class ReviewCommentService {
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private ReviewImageRepository reviewImageRepository;
+
+// Nếu comment không có ảnh => bỏ hẳn cái này đi
+// @Autowired
+// private ReviewCommentImageService reviewCommentImageService;
+
 
     @Autowired
     private ReviewRepository reviewRepository;
@@ -52,30 +59,95 @@ public class ReviewCommentService {
     // ========================================
 
     @Transactional
-    public ReviewDTO createReview(CreateReviewRequestDTO request) {
+    public void uploadReviewImages(Integer reviewId, List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) return;
+
+        if (files.size() > 5) {
+            throw new RuntimeException("Maximum 5 images allowed per review");
+        }
+
         User currentUser = getCurrentUser();
 
-        // Validate location exists
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + reviewId));
+
+        // chỉ chủ review mới upload
+        if (!review.getUser().getId().equals(currentUser.getId())) {
+            throw new RuntimeException("You can only upload images to your own review");
+        }
+
+        long currentCount = reviewImageRepository.countByReviewId(reviewId);
+        long newCount = files.stream().filter(f -> f != null && !f.isEmpty()).count();
+
+        if (currentCount + newCount > 5) {
+            throw new RuntimeException("Total images per review cannot exceed 5");
+        }
+
+        for (MultipartFile f : files) {
+            if (f == null || f.isEmpty()) continue;
+
+            try {
+                Map result = cloudinaryService.uploadImage(f, "reviews/" + reviewId);
+                String publicId = (String) result.get("public_id");
+                String secureUrl = (String) result.get("secure_url");
+
+                reviewImageRepository.save(ReviewImage.builder()
+                        .review(review)
+                        .publicId(publicId)
+                        .secureUrl(secureUrl)
+                        .build());
+
+            } catch (IOException e) {
+                throw new RuntimeException("Upload review image failed: " + e.getMessage(), e);
+            }
+        }
+    }
+
+
+    @Transactional
+    public ReviewDTO createReview(CreateReviewRequestDTO request, List<MultipartFile> files) {
+        User currentUser = getCurrentUser();
+
         Location location = locationRepository.findById(request.getLocationId())
                 .orElseThrow(() -> new RuntimeException("Location not found with id: " + request.getLocationId()));
 
-        // Check if user already reviewed this location
         if (reviewRepository.findByUserIdAndLocationId(currentUser.getId(), request.getLocationId()).isPresent()) {
             throw new RuntimeException("You have already reviewed this location");
         }
 
-        // Create review
-        Review review = Review.builder()
+        Review savedReview = reviewRepository.save(Review.builder()
                 .user(currentUser)
                 .location(location)
                 .rating(request.getRating())
                 .content(request.getContent())
-                .build();
+                .build());
 
-        Review savedReview = reviewRepository.save(review);
+        if (files != null && !files.isEmpty()) {
+            if (files.size() > 5) throw new RuntimeException("Maximum 5 images allowed per review");
+
+            for (MultipartFile f : files) {
+                if (f == null || f.isEmpty()) continue;
+
+                try {
+                    Map result = cloudinaryService.uploadImage(f, "reviews/" + savedReview.getId());
+                    String publicId = (String) result.get("public_id");
+                    String secureUrl = (String) result.get("secure_url");
+
+                    reviewImageRepository.save(ReviewImage.builder()
+                            .review(savedReview)
+                            .publicId(publicId)
+                            .secureUrl(secureUrl)
+                            .build());
+                } catch (IOException e) {
+                    throw new RuntimeException("Upload review image failed: " + e.getMessage(), e);
+                }
+            }
+        }
 
         return toReviewDTO(savedReview);
     }
+
+
 
     public List<ReviewDTO> getUserReviews(Integer userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -215,11 +287,7 @@ public class ReviewCommentService {
         List<ReviewComment> allComments =
                 reviewCommentRepository.findByReviewIdOrderByCreatedAtAsc(reviewId);
 
-        List<Integer> commentIds = allComments.stream().map(ReviewComment::getId).toList();
-        Map<Integer, List<ReviewCommentImageDTO>> imagesByCommentId =
-                commentIds.isEmpty() ? Map.of() : reviewCommentImageService.getImagesForComments(commentIds);
-
-        return buildCommentTree(allComments, imagesByCommentId);
+        return buildCommentTree(allComments);
     }
 
     @Transactional
@@ -274,26 +342,18 @@ public class ReviewCommentService {
     }
 
     private ReviewDTO toReviewDTO(Review review) {
-        // Get comments
+        // comments (text-only)
         List<ReviewComment> allComments =
                 reviewCommentRepository.findByReviewIdOrderByCreatedAtAsc(review.getId());
 
-        // ✅ Batch load images for all commentIds
-        List<Integer> commentIds = allComments.stream()
-                .map(ReviewComment::getId)
-                .toList();
+        // nếu comment không có ảnh => imagesByCommentId = Map.of()
+        List<CommentResponseDTO> commentTree = buildCommentTree(allComments);
 
-        Map<Integer, List<ReviewCommentImageDTO>> imagesByCommentId =
-                commentIds.isEmpty()
-                        ? Map.of()
-                        : reviewCommentImageService.getImagesForComments(commentIds);
-
-        // Build tree with images
-        List<CommentResponseDTO> commentTree = buildCommentTree(allComments, imagesByCommentId);
-
-        // ✅ Gallery images of this review (flatten)
-        List<ReviewCommentImageDTO> reviewImages = imagesByCommentId.values().stream()
-                .flatMap(List::stream)
+        // ✅ ảnh của review
+        List<String> reviewImages = reviewImageRepository
+                .findByReviewIdOrderByCreatedAtAsc(review.getId())
+                .stream()
+                .map(ReviewImage::getSecureUrl)
                 .toList();
 
         return ReviewDTO.builder()
@@ -307,9 +367,11 @@ public class ReviewCommentService {
                 .content(review.getContent())
                 .createdAt(review.getCreatedAt())
                 .comments(commentTree)
-                .images(reviewImages)
+                .images(reviewImages) // đổi type images trong ReviewDTO thành List<String> (hoặc tạo ReviewImageDTO)
                 .build();
     }
+
+
 
 
     private CommentResponseDTO toCommentDTO(
@@ -326,40 +388,37 @@ public class ReviewCommentService {
                 .createdAt(comment.getCreatedAt())
                 .parentCommentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null)
                 .replies(new ArrayList<>())
-                .images(images != null ? images : List.of()) // ✅ NEW
                 .build();
     }
 
 
-    private List<CommentResponseDTO> buildCommentTree(
-            List<ReviewComment> allComments,
-            Map<Integer, List<ReviewCommentImageDTO>> imagesByCommentId
-    ) {
+    private List<CommentResponseDTO> buildCommentTree(List<ReviewComment> allComments) {
         Map<Integer, CommentResponseDTO> nodeMap = new HashMap<>();
         List<CommentResponseDTO> rootComments = new ArrayList<>();
 
-        // Create nodes
-        for (ReviewComment comment : allComments) {
-            List<ReviewCommentImageDTO> imgs =
-                    imagesByCommentId.getOrDefault(comment.getId(), List.of());
-
-            CommentResponseDTO dto = toCommentDTO(comment, imgs);
-            nodeMap.put(comment.getId(), dto);
+        for (ReviewComment c : allComments) {
+            CommentResponseDTO dto = CommentResponseDTO.builder()
+                    .id(c.getId())
+                    .reviewId(c.getReview().getId())
+                    .userId(c.getUser().getId())
+                    .userName(c.getUser().getFullName())
+                    .userAvatar(c.getUser().getAvatar())
+                    .content(c.getContent())
+                    .createdAt(c.getCreatedAt())
+                    .parentCommentId(c.getParentComment() != null ? c.getParentComment().getId() : null)
+                    .replies(new ArrayList<>())
+                    .build();
+            nodeMap.put(c.getId(), dto);
         }
 
-        // Link tree
-        for (ReviewComment comment : allComments) {
-            CommentResponseDTO dto = nodeMap.get(comment.getId());
-
-            if (comment.getParentComment() == null) {
-                rootComments.add(dto);
-            } else {
-                CommentResponseDTO parentDto = nodeMap.get(comment.getParentComment().getId());
-                if (parentDto != null) parentDto.getReplies().add(dto);
-            }
+        for (ReviewComment c : allComments) {
+            CommentResponseDTO dto = nodeMap.get(c.getId());
+            if (c.getParentComment() == null) rootComments.add(dto);
+            else nodeMap.get(c.getParentComment().getId()).getReplies().add(dto);
         }
 
         return rootComments;
     }
+
 
 }

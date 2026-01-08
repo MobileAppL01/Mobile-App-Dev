@@ -23,7 +23,9 @@ public interface ReviewCommentRepository extends JpaRepository<ReviewComment, In
     
     // Get comments by user
     List<ReviewComment> findByUserId(Integer userId);
-    
+
+
+
     // Count comments by review
     @Query("SELECT COUNT(c) FROM ReviewComment c WHERE c.review.id = :reviewId")
     Long countByReviewId(@Param("reviewId") Integer reviewId);

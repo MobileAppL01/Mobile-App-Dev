@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -29,13 +31,25 @@ public class ReviewCommentController {
     // REVIEW ENDPOINTS
     // ========================================
 
-    @PostMapping
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('PLAYER')")
-    @Operation(summary = "Create a review", description = "Create a new review for a location with 1-5 star rating")
-    public ResponseEntity<ReviewDTO> createReview(@Valid @RequestBody CreateReviewRequestDTO request) {
-        ReviewDTO review = reviewCommentService.createReview(request);
+    public ResponseEntity<ReviewDTO> createReview(@Valid @RequestBody CreateReviewRequestDTO data) {
+        ReviewDTO review = reviewCommentService.createReview(data, null); // tạo review chưa có ảnh
         return ResponseEntity.ok(review);
     }
+
+    @PostMapping(value = "/{reviewId}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('PLAYER')")
+    public ResponseEntity<ReviewDTO> uploadReviewImages(
+            @PathVariable Integer reviewId,
+            @RequestPart("files") List<MultipartFile> files
+    ) {
+        reviewCommentService.uploadReviewImages(reviewId, files);
+        return ResponseEntity.ok(reviewCommentService.getReviewById(reviewId));
+    }
+
+
 
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get user reviews", description = "Get all reviews written by a specific user")

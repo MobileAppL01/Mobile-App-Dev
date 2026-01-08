@@ -24,5 +24,5 @@ public class ReviewDTO {
     private LocalDateTime createdAt;
     private List<CommentResponseDTO> comments; // comment tree
 
-    private List<ReviewCommentImageDTO> images;
+    private List<String> images;
 }

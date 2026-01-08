@@ -23,7 +23,7 @@ public class CommentResponseDTO {
     private LocalDateTime createdAt;
     private Integer parentCommentId; // null if root comment
 
-    private List<ReviewCommentImageDTO> images;
+//    private List<ReviewCommentImageDTO> images;
 
     @Builder.Default
     private List<CommentResponseDTO> replies = new ArrayList<>(); // nested replies
