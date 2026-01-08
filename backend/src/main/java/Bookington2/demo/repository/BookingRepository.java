@@ -108,6 +108,15 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
         Long sumRevenueByOwnerIdAndMonth(@Param("ownerId") Integer ownerId, @Param("month") int month,
                         @Param("year") int year);
 
+        @Query("SELECT b.court.id as courtId, b.court.name as courtName, b.court.location.name as locationName, COALESCE(SUM(b.totalPrice), 0) as totalRevenue " +
+               "FROM Booking b " +
+               "WHERE b.court.location.owner.id = :ownerId " +
+               "AND b.status = 'COMPLETED' " +
+               "AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year " +
+               "GROUP BY b.court.id, b.court.name, b.court.location.name")
+        List<Bookington2.demo.dto.owner.CourtRevenueStats> getRevenueByCourt(@Param("ownerId") Integer ownerId, @Param("month") int month,
+                        @Param("year") int year);
+
         @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.court.location.owner.id = :ownerId " +
                         "AND b.court.location.id = :locationId AND b.status = 'COMPLETED' AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year")
         Long sumRevenueByOwnerIdAndLocationIdAndMonth(@Param("ownerId") Integer ownerId, @Param("locationId") Integer locationId, 

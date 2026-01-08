@@ -95,6 +95,10 @@ public class UserService {
     public void deleteUser(Integer userId) {
         userRepository.deleteById(userId);
     }
+    
+    public List<User> getAllOwners() {
+        return userRepository.findByRole(UserRole.OWNER);
+    }
 
     User toUser(UserCreationRequest request, String Role) {
         User user = new User();

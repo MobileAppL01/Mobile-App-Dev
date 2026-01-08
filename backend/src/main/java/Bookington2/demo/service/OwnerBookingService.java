@@ -149,4 +149,8 @@ public class OwnerBookingService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public List<Bookington2.demo.dto.owner.CourtRevenueStats> getCourtRevenueStatistics(Integer ownerId, int month, int year) {
+        return bookingRepository.getRevenueByCourt(ownerId, month, year);
+    }
 }
