@@ -275,32 +275,33 @@ public class OwnerController {
 
         // ==================== STATISTICS APIS ====================
 
-    @GetMapping("/statistics/revenue")
-    @Operation(summary = "Xem doanh thu", description = "Thống kê doanh thu theo tháng/năm")
-    public ResponseEntity<APIResponse<RevenueStatisticsResponse>> getRevenueStatistics(
-            @Parameter(description = "Tháng (1-12)") @RequestParam int month,
-            @Parameter(description = "Năm") @RequestParam int year) {
-        RevenueStatisticsResponse stats = bookingService.getRevenueStatistics(getCurrentOwnerId(), month, year);
-        return ResponseEntity.ok(APIResponse.<RevenueStatisticsResponse>builder()
-                .code(1000)
-                .message("Lấy thống kê doanh thu thành công")
-                .result(stats)
-                .build());
-    }
+        @GetMapping("/statistics/revenue")
+        @Operation(summary = "Xem doanh thu", description = "Thống kê doanh thu theo tháng/năm")
+        public ResponseEntity<APIResponse<RevenueStatisticsResponse>> getRevenueStatistics(
+                        @Parameter(description = "Tháng (1-12)") @RequestParam int month,
+                        @Parameter(description = "Năm") @RequestParam int year) {
+                RevenueStatisticsResponse stats = bookingService.getRevenueStatistics(getCurrentOwnerId(), month, year);
+                return ResponseEntity.ok(APIResponse.<RevenueStatisticsResponse>builder()
+                                .code(1000)
+                                .message("Lấy thống kê doanh thu thành công")
+                                .result(stats)
+                                .build());
+        }
 
-    @GetMapping("/statistics/revenue-by-location")
-    @Operation(summary = "Xem doanh thu theo cơ sở", description = "Thống kê doanh thu từng cơ sở theo ngày/tháng/năm")
-    public ResponseEntity<APIResponse<List<LocationRevenueResponse>>> getRevenueByLocation(
-            @Parameter(description = "Lọc theo cơ sở (null để lấy tất cả)") @RequestParam(required = false) Integer locationId,
-            @Parameter(description = "Tháng (1-12), null nếu lọc theo năm hoặc ngày") @RequestParam(required = false) Integer month,
-            @Parameter(description = "Năm, bắt buộc nếu có tháng hoặc để lọc theo năm") @RequestParam(required = false) Integer year,
-            @Parameter(description = "Ngày cụ thể (yyyy-MM-dd), null nếu lọc theo tháng/năm") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        
-        List<LocationRevenueResponse> stats = bookingService.getRevenueByLocation(getCurrentOwnerId(), locationId, month, year, date);
-        return ResponseEntity.ok(APIResponse.<List<LocationRevenueResponse>>builder()
-                .code(1000)
-                .message("Lấy thống kê doanh thu theo cơ sở thành công")
-                .result(stats)
-                .build());
-    }
+        @GetMapping("/statistics/revenue-by-location")
+        @Operation(summary = "Xem doanh thu theo cơ sở", description = "Thống kê doanh thu từng cơ sở theo ngày/tháng/năm")
+        public ResponseEntity<APIResponse<List<LocationRevenueResponse>>> getRevenueByLocation(
+                        @Parameter(description = "Lọc theo cơ sở (null để lấy tất cả)") @RequestParam(required = false) Integer locationId,
+                        @Parameter(description = "Tháng (1-12), null nếu lọc theo năm hoặc ngày") @RequestParam(required = false) Integer month,
+                        @Parameter(description = "Năm, bắt buộc nếu có tháng hoặc để lọc theo năm") @RequestParam(required = false) Integer year,
+                        @Parameter(description = "Ngày cụ thể (yyyy-MM-dd), null nếu lọc theo tháng/năm") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+                List<LocationRevenueResponse> stats = bookingService.getRevenueByLocation(getCurrentOwnerId(),
+                                locationId, month, year, date);
+                return ResponseEntity.ok(APIResponse.<List<LocationRevenueResponse>>builder()
+                                .code(1000)
+                                .message("Lấy thống kê doanh thu theo cơ sở thành công")
+                                .result(stats)
+                                .build());
+        }
 }

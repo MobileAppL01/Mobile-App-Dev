@@ -48,11 +48,12 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         @Param("status") BookingStatus status,
                         @Param("fromDate") LocalDate fromDate,
                         @Param("toDate") LocalDate toDate);
+
         Optional<Booking> findTopByStatusOrderByCreatedAtDesc(BookingStatus status);
 
         Optional<Booking> findByPaymentIdOrTransactionId(String paymentId, String transactionId);
 
-    // Find booking by ID and player ID
+        // Find booking by ID and player ID
         Optional<Booking> findByIdAndPlayer_Id(Integer bookingId, Integer playerId);
 
         // ==================== OWNER BOOKING APIs ====================
@@ -104,42 +105,48 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
                         @Param("year") int year);
 
         @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.court.location.owner.id = :ownerId " +
-                        "AND b.status = 'COMPLETED' AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year")
+                        "AND b.status IN ('COMPLETED', 'CONFIRMED') AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year")
         Long sumRevenueByOwnerIdAndMonth(@Param("ownerId") Integer ownerId, @Param("month") int month,
                         @Param("year") int year);
 
-        @Query("SELECT b.court.id as courtId, b.court.name as courtName, b.court.location.name as locationName, COALESCE(SUM(b.totalPrice), 0) as totalRevenue " +
-               "FROM Booking b " +
-               "WHERE b.court.location.owner.id = :ownerId " +
-               "AND b.status = 'COMPLETED' " +
-               "AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year " +
-               "GROUP BY b.court.id, b.court.name, b.court.location.name")
-        List<Bookington2.demo.dto.owner.CourtRevenueStats> getRevenueByCourt(@Param("ownerId") Integer ownerId, @Param("month") int month,
+        @Query("SELECT b.court.id as courtId, b.court.name as courtName, b.court.location.name as locationName, COALESCE(SUM(b.totalPrice), 0) as totalRevenue "
+                        +
+                        "FROM Booking b " +
+                        "WHERE b.court.location.owner.id = :ownerId " +
+                        "AND b.status IN ('COMPLETED', 'CONFIRMED') " +
+                        "AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year " +
+                        "GROUP BY b.court.id, b.court.name, b.court.location.name")
+        List<Bookington2.demo.dto.owner.CourtRevenueStats> getRevenueByCourt(@Param("ownerId") Integer ownerId,
+                        @Param("month") int month,
                         @Param("year") int year);
 
         @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.court.location.owner.id = :ownerId " +
-                        "AND b.court.location.id = :locationId AND b.status = 'COMPLETED' AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year")
-        Long sumRevenueByOwnerIdAndLocationIdAndMonth(@Param("ownerId") Integer ownerId, @Param("locationId") Integer locationId, 
+                        "AND b.court.location.id = :locationId AND b.status IN ('COMPLETED', 'CONFIRMED') AND MONTH(b.bookingDate) = :month AND YEAR(b.bookingDate) = :year")
+        Long sumRevenueByOwnerIdAndLocationIdAndMonth(@Param("ownerId") Integer ownerId,
+                        @Param("locationId") Integer locationId,
                         @Param("month") int month, @Param("year") int year);
 
         @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.court.location.owner.id = :ownerId " +
-                        "AND b.court.location.id = :locationId AND b.status = 'COMPLETED' AND YEAR(b.bookingDate) = :year")
-        Long sumRevenueByOwnerIdAndLocationIdAndYear(@Param("ownerId") Integer ownerId, @Param("locationId") Integer locationId, 
+                        "AND b.court.location.id = :locationId AND b.status IN ('COMPLETED', 'CONFIRMED') AND YEAR(b.bookingDate) = :year")
+        Long sumRevenueByOwnerIdAndLocationIdAndYear(@Param("ownerId") Integer ownerId,
+                        @Param("locationId") Integer locationId,
                         @Param("year") int year);
 
         @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.court.location.owner.id = :ownerId " +
-                        "AND b.court.location.id = :locationId AND b.status = 'COMPLETED' AND b.bookingDate = :date")
-        Long sumRevenueByOwnerIdAndLocationIdAndDate(@Param("ownerId") Integer ownerId, @Param("locationId") Integer locationId, 
+                        "AND b.court.location.id = :locationId AND b.status IN ('COMPLETED', 'CONFIRMED') AND b.bookingDate = :date")
+        Long sumRevenueByOwnerIdAndLocationIdAndDate(@Param("ownerId") Integer ownerId,
+                        @Param("locationId") Integer locationId,
                         @Param("date") LocalDate date);
 
         // Additional queries for public API
         @Query("SELECT DISTINCT b.startHours FROM Booking b WHERE b.court.id = :courtId AND b.bookingDate = :date AND b.status <> 'CANCELED'")
-        List<List<Integer>> findStartHoursByCourtAndDate(@Param("courtId") Integer courtId, @Param("date") LocalDate date);
+        List<List<Integer>> findStartHoursByCourtAndDate(@Param("courtId") Integer courtId,
+                        @Param("date") LocalDate date);
 
         @Query(value = """
-                SELECT UNNEST(start_hours) as hour 
-                FROM booking 
-                WHERE court_id = :courtId AND booking_date = :date AND status <> 'CANCELED'
-                """, nativeQuery = true)
+                        SELECT UNNEST(start_hours) as hour
+                        FROM booking
+                        WHERE court_id = :courtId AND booking_date = :date AND status <> 'CANCELED'
+                        """, nativeQuery = true)
         List<Integer> findBookedHoursByCourtAndDate(@Param("courtId") Integer courtId, @Param("date") LocalDate date);
 }

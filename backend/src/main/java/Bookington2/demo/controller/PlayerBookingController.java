@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasAnyRole('PLAYER')")
+@PreAuthorize("hasAnyRole('PLAYER', 'OWNER')")
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Tag(name = "Player Booking API", description = "API đặt sân cho người chơi")
@@ -63,6 +63,7 @@ public class PlayerBookingController {
         // ==================== BOOKING APIs ====================
 
         @PostMapping("/bookings")
+        @PreAuthorize("hasRole('PLAYER')")
         @Operation(summary = "Tạo yêu cầu đặt sân", description = "Người dùng gửi yêu cầu đặt sân. Hệ thống tính toán giá và lưu trạng thái chờ.")
         public ResponseEntity<APIResponse<BookingDetailResponse>> createBooking(
                         @Valid @RequestBody CreateBookingRequest request) {
@@ -78,6 +79,7 @@ public class PlayerBookingController {
         }
 
         @GetMapping("/bookings/my-history")
+        @PreAuthorize("hasRole('PLAYER')")
         @Operation(summary = "Xem lịch sử đặt sân của tôi", description = "Lấy danh sách booking của user đang đăng nhập")
         public ResponseEntity<APIResponse<List<MyBookingResponse>>> getMyBookings(
                         @Parameter(description = "Lọc theo trạng thái") @RequestParam(required = false) BookingStatus status,
@@ -97,6 +99,7 @@ public class PlayerBookingController {
         }
 
         @GetMapping("/bookings/{id}")
+        @PreAuthorize("hasRole('PLAYER')")
         @Operation(summary = "Xem chi tiết booking", description = "Lấy thông tin chi tiết của một booking")
         public ResponseEntity<APIResponse<BookingDetailResponse>> getBookingDetail(
                         @Parameter(description = "ID của booking") @PathVariable Integer id) {
@@ -111,6 +114,7 @@ public class PlayerBookingController {
         }
 
         @PutMapping("/bookings/{id}/cancel")
+        @PreAuthorize("hasRole('PLAYER')")
         @Operation(summary = "Hủy đặt sân", description = "Người dùng tự hủy lịch đặt. Chỉ được hủy khi trạng thái là PENDING hoặc CONFIRMED")
         public ResponseEntity<APIResponse<CancelBookingResponse>> cancelBooking(
                         @Parameter(description = "ID của booking") @PathVariable Integer id) {
